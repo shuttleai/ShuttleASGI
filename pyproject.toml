@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shuttleasgi"
+dynamic = ["version"]
+authors = [{ name = "shuttleai", email = "noreply@shuttleai.app" }, { name = "Roberto Prevato", email = "roberto.prevato@gmail.com" }]
+description = "BlackSheep, but with ShuttleAI's customizations."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Environment :: Web Environment",
+    "Operating System :: OS Independent",
+    "Framework :: AsyncIO",
+]
+keywords = ["blacksheep", "web framework", "asyncio", "shuttleai", "shuttleasgi"]
+dependencies = [
+    "httptools>=0.5",
+    "certifi>=2022.9.24",
+    "charset-normalizer~=3.1.0",
+    "guardpost>=1.0.2",
+    "rodi~=2.0.2",
+    "essentials>=1.1.4,<2.0",
+    "essentials-openapi>=1.0.6,<1.1",
+    "python-dateutil~=2.8.2",
+    "itsdangerous~=2.1.2",
+]
+
+[tool.setuptools]
+packages = ["shuttleasgi"]
+
+[tool.setuptools.dynamic]
+version = { attr = "shuttleasgi.__version__" }
+
+[project.optional-dependencies]
+jinja = ["Jinja2~=3.1.2"]
+full = ["cryptography>=38.0.1,<41.1.0", "PyJWT~=2.6.0", "websockets~=10.3"]
+
+[project.urls]
+"Homepage" = "https://github.com/ShuttleAI/ShuttleASGI"
+"Bug Tracker" = "https://github.com/ShuttleAI/ShuttleASGI/issues"

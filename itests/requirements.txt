@@ -1,0 +1,5 @@
+Flask
+requests
+uvicorn==0.25.0
+Hypercorn==0.15.0
+websockets==10.1
