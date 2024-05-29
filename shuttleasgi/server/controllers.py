@@ -192,7 +192,7 @@ class Controller(metaclass=ControllerMeta):
         """
         return json(data, status)
 
-    def pretty_orjson(self, data: Any, status: int = 200, headers = None) -> Response:
+    def pretty_orjson(self, data: Any, status: int = 200, headers: list[tuple[bytes, bytes]] = None) -> Response:
         """
         Returns a response with indented application/json content,
         and given status (default HTTP 200 OK).

@@ -36,7 +36,7 @@ def _json_serialize(obj) -> str:
     return json_settings.dumps(obj)
 
 
-def _json_content(obj) -> JSONContent:
+def _json_content(obj) -> ORJSONContent:
     return ORJSONContent(obj, _json_serialize)
 
 
@@ -204,7 +204,7 @@ def json(data: Any, status: int = 200) -> Response:
 def pretty_orjson(
     data: Any,
     status: int = 200,
-    headers = None,
+    headers: list[tuple[bytes, bytes]] = None,
 ) -> Response:
     """
     Returns a response with indented application/json content,
