@@ -39,6 +39,7 @@ from shuttleasgi.contents import FormPart
 from shuttleasgi.exceptions import BadRequest
 from shuttleasgi.server.websocket import WebSocket
 from shuttleasgi.url import URL
+from orjson import loads
 
 T = TypeVar("T")
 TypeOrName = Union[Type, str]
@@ -543,7 +544,8 @@ class JSONBinder(BodyBinder):
         return request.declares_json()
 
     async def read_data(self, request: Request) -> Any:
-        return await request.json()
+        raw = await request.read()
+        return loads(raw)
 
 
 JsonBinder = JSONBinder

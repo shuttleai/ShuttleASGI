@@ -204,7 +204,7 @@ def json(data: Any, status: int = 200) -> Response:
 def pretty_orjson(
     data: Any,
     status: int = 200,
-    indent: int = 2,
+    headers = None,
 ) -> Response:
     """
     Returns a response with indented application/json content,
@@ -212,7 +212,7 @@ def pretty_orjson(
     """
     return Response(
         status,
-        None,
+        headers,
         Content(
             b"application/json",
             json_settings.raw_pretty_dumps(data),

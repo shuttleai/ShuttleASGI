@@ -255,9 +255,9 @@ cdef class Message:
         if not self.declares_json():
             return None
 
-        text = await self.text()
+        text = await self.read()
 
-        if text is None or text == "":
+        if text is None or text == b"":
             return None
 
         try:

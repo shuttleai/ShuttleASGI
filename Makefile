@@ -37,8 +37,12 @@ annotate:
 	cython shuttleasgi/baseapp.pyx -a
 
 
-build: test
+build:
 	python -m build
+
+
+build2:
+	python setup.py bdist_wheel
 
 
 prepforbuild:
@@ -49,7 +53,7 @@ testrelease:
 	twine upload -r testpypi dist/*
 
 
-release: clean compile artifacts
+release: clean compile annotate prepforbuild build build2
 	twine upload -r pypi dist/*
 
 
