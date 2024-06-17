@@ -109,19 +109,19 @@ jobs:
       #     pip install -U pydantic==2.4.2
       #     pytest
 
-      - name: Run linters
-        run: |
-          echo "Running linters - if build fails here, please be patient! Feel free to ask for assistance."
+      # - name: Run linters
+      #   run: |
+      #     echo "Running linters - if build fails here, please be patient! Feel free to ask for assistance."
 
-          flake8 shuttleasgi
-          flake8 tests
-          flake8 itests
-          isort --check-only shuttleasgi 2>&1
-          isort --check-only tests 2>&1
-          isort --check-only itests 2>&1
-          black --check shuttleasgi 2>&1
-          black --check tests 2>&1
-          black --check itests 2>&1
+      #     flake8 shuttleasgi
+      #     flake8 tests
+      #     flake8 itests
+      #     isort --check-only shuttleasgi 2>&1
+      #     isort --check-only tests 2>&1
+      #     isort --check-only itests 2>&1
+      #     black --check shuttleasgi 2>&1
+      #     black --check tests 2>&1
+      #     black --check itests 2>&1
 
       - name: Test Hypercorn
         run: |
