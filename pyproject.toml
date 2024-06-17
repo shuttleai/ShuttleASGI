@@ -5,8 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "shuttleasgi"
 dynamic = ["version"]
-authors = [{ name = "shuttleai", email = "noreply@shuttleai.app" }, { name = "Roberto Prevato", email = "roberto.prevato@gmail.com" }]
-description = "BlackSheep, but with ShuttleAI's customizations."
+authors = [{ name = "Roberto Prevato", email = "roberto.prevato@gmail.com" }, { name = "Thoth Christian", email = "chris@shuttleai.app" }]
+maintainers = [{ name = "Christian Thoth", email = "chris@shuttleai.app" }]
+description = "Fork of BlackSheep, the ex fastest web framework for Python asyncio"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -21,7 +22,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Framework :: AsyncIO",
 ]
-keywords = ["blacksheep", "web framework", "asyncio", "shuttleai", "shuttleasgi"]
+keywords = ["shuttleasgi", "web framework", "asyncio", "blacksheep", "shuttleai"]
 dependencies = [
     "httptools>=0.5",
     "certifi>=2022.9.24",
@@ -32,6 +33,7 @@ dependencies = [
     "essentials-openapi>=1.0.6,<1.1",
     "python-dateutil~=2.8.2",
     "itsdangerous~=2.1.2",
+    "orjson"
 ]
 
 [tool.setuptools]
@@ -45,5 +47,6 @@ jinja = ["Jinja2~=3.1.2"]
 full = ["cryptography>=38.0.1,<41.1.0", "PyJWT~=2.6.0", "websockets~=10.3"]
 
 [project.urls]
-"Homepage" = "https://github.com/ShuttleAI/ShuttleASGI"
-"Bug Tracker" = "https://github.com/ShuttleAI/ShuttleASGI/issues"
+"Website" = "https://shuttleai.app"
+"Homepage" = "https://github.com/shuttleai/ShuttleASGI"
+"Bug Tracker" = "https://github.com/shuttleai/shuttleasgi/issues"

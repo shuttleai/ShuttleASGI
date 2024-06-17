@@ -1,18 +1,38 @@
 import http
 import logging
 
-from .contents cimport Content, TextContent
+from .contents cimport Content, TextContent, ORJSONContent
 from .exceptions cimport HTTPException
 from .messages cimport Request, Response
 from .utils import get_class_instance_hierarchy
 
 
 async def handle_not_found(app, Request request, HTTPException http_exception):
-    return Response(404, content=TextContent('Resource not found'))
+    cdef str method = request.method
+    cdef str path = request.url.path.decode()
+
+    return Response(404, content=ORJSONContent({
+        "error": {
+            "type": "invalid_request_error",
+            "code": "unknown_url",
+            "message": f"Invalid URL ({method} {path}).",
+            "param": None
+        }
+    }))
 
 
-async def handle_method_not_allowed(app, Request request, HTTPException http_exception):
-    return Response(405, content=TextContent('Method not allowed'))
+async def handle_wrong_method(app, Request request, HTTPException http_exception):
+    cdef str method = request.method
+    cdef str path = request.url.path.decode()
+
+    return Response(405, content=ORJSONContent({
+        "error": {
+            "type": "invalid_request_error",
+            "code": "method_not_allowed",
+            "message": f"Not allowed to {method} on {path}.",
+            "param": None
+        }
+    }))
 
 
 async def handle_bad_request(app, Request request, HTTPException http_exception):
@@ -43,8 +63,8 @@ cdef class BaseApplication:
 
     def init_exceptions_handlers(self):
         return {
+            405: handle_wrong_method,
             404: handle_not_found,
-            405: handle_method_not_allowed,
             400: handle_bad_request
         }
 
@@ -75,7 +95,6 @@ cdef class BaseApplication:
 
     async def handle(self, Request request):
         cdef object route
-        cdef object route_no_method
         cdef Response response
 
         route = self.router.get_match(request)
@@ -88,14 +107,12 @@ cdef class BaseApplication:
             except Exception as exc:
                 response = await self.handle_request_handler_exception(request, exc)
         else:
-            route_no_method = self.router.get_match_ignore_method(request)
-            if route_no_method:
+            if self.router.get_match_disregard_method(request):
                 response = await self.exceptions_handlers.get(405)(self, request, None)
             else:
                 response = await self.exceptions_handlers.get(404)(self, request, None)
-
-            if not response:
-                response = Response(404)
+                if not response:
+                    response = Response(404)
         # if the request handler didn't return an object,
         # and since the request was handled successfully, return success status code No Content
         # for example, a user might return "None" from an handler
@@ -139,7 +156,7 @@ cdef class BaseApplication:
         """
         if 500 in self.exceptions_handlers:
             # give a chance to run to the custom exception handler - but if it
-            # fails, handle the failure (otherwise the
+            # fails, handle the failure
             try:
                 return await self.exceptions_handlers[500](self, request, exc)
             except Exception:

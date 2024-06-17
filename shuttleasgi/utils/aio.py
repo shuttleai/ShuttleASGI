@@ -1,5 +1,5 @@
 import asyncio
-import orjson
+import json
 import sys
 import urllib.error
 import urllib.parse
@@ -33,8 +33,8 @@ def fetch(url: str) -> Any:
 
 def _try_parse_content_as_json(content: bytes) -> Any:
     try:
-        return orjson.loads(content.decode("utf8"))
-    except orjson.JSONDecodeError:
+        return json.loads(content.decode("utf8"))
+    except json.JSONDecodeError:
         return content
 
 
@@ -69,7 +69,7 @@ class HTTPHandler:
 
     async def fetch_json(self, url: str) -> Any:
         data = await self.fetch(url)
-        return orjson.loads(data)
+        return json.loads(data)
 
     async def post_form(self, url: str, data: Any) -> Any:
         return await self.loop.run_in_executor(None, lambda: post(url, data))

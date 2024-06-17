@@ -27,7 +27,7 @@ from shuttleasgi.server.responses import (
     not_modified,
     ok,
     permanent_redirect,
-    pretty_orjson,
+    pretty_json,
     redirect,
     see_other,
     status_code,
@@ -586,10 +586,10 @@ async def test_json_response(obj: Any, values: Dict[str, Any], app):
 
 @pytest.mark.parametrize("obj,values", JSON_OBJECTS)
 @pytest.mark.asyncio
-async def test_pretty_orjson_response(obj: Any, values: Dict[str, Any], app):
+async def test_pretty_json_response(obj: Any, values: Dict[str, Any], app):
     @app.router.get("/")
     async def home():
-        return pretty_orjson(obj)
+        return pretty_json(obj)
 
     app.normalize_handlers()
 
@@ -1074,7 +1074,7 @@ async def test_json_response_in_controller(obj: Any, values: Dict[str, Any], app
 
 @pytest.mark.parametrize("obj,values", JSON_OBJECTS)
 @pytest.mark.asyncio
-async def test_pretty_orjson_response_in_controller(
+async def test_pretty_json_response_in_controller(
     obj: Any, values: Dict[str, Any], app
 ):
     app.controllers_router = RoutesRegistry()
@@ -1083,7 +1083,7 @@ async def test_pretty_orjson_response_in_controller(
     class Home(Controller):
         @get("/")
         def greet(self):
-            return self.pretty_orjson(obj)
+            return self.pretty_json(obj)
 
     await app.start()
 

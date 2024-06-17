@@ -1,7 +1,7 @@
 # cython: language_level=3, embedsignature=True
 # Copyright (C) 2018-present Roberto Prevato
 #
-# This module is part of BlackSheep and is released under
+# This module is part of ShuttleASGI and is released under
 # the MIT License https://opensource.org/licenses/MIT
 
 
@@ -50,10 +50,6 @@ cdef class FormPart:
 
 cdef class ServerSentEvent:
     cdef readonly object data
-    cdef readonly str event
-    cdef readonly str id
-    cdef readonly int retry
-    cdef readonly str comment
 
 
 cdef class MultiPartFormData(Content):

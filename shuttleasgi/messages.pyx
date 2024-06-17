@@ -1,8 +1,8 @@
 import asyncio
 import http
 import re
-import orjson
 from datetime import datetime, timedelta
+from json.decoder import JSONDecodeError
 from urllib.parse import parse_qs, quote, unquote, urlencode
 
 import charset_normalizer
@@ -255,14 +255,14 @@ cdef class Message:
         if not self.declares_json():
             return None
 
-        text = await self.read()
+        text = await self.content.read()
 
         if text is None or text == b"":
             return None
 
         try:
             return loads(text)
-        except orjson.JSONDecodeError as decode_error:
+        except JSONDecodeError as decode_error:
             content_type = self.content_type()
             if content_type and b'json' in content_type:
                 # NB: content type could also be "application/problem+json";
@@ -313,6 +313,7 @@ cdef class Request(Message):
         if _url:
             self._path = _url.path
             self._raw_query = _url.query
+        self.sai = {}
 
     @property
     def identity(self):
@@ -329,6 +330,14 @@ cdef class Request(Message):
     @user.setter
     def user(self, value):
         self.__dict__["_user"] = value
+
+    @property
+    def sai(self) -> dict:
+        return self.__dict__.get("sai")
+
+    @sai.setter
+    def sai(self, value: dict):
+        self.__dict__["sai"] = value
 
     @property
     def scheme(self) -> str:

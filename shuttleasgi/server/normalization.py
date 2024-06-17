@@ -711,7 +711,7 @@ def normalize_handler(
 ) -> Callable[[Request], Awaitable[Response]]:
     """
     Root function used to normalize a request handler. The objective of this function is
-    to improve the developer experience, so developers using ShuttleASGI have more
+    to improve the developer experience, so developers using BlackSheep have more
     options when defining request handlers.
 
     When a request handler already has the right signature, it is kept as-is (this
@@ -756,7 +756,7 @@ def normalize_handler(
         normalized = get_sync_wrapper(services, route, method, params, params_len)
 
     # Normalize output. WebSocket handlers must be excluded here because their
-    # response is not handled writing a ShuttleASGI Response object.
+    # response is not handled writing a BlackSheep Response object.
     if (
         return_type is _empty or return_type is not Response
     ) and http_method != "GET_WS":

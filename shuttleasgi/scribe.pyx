@@ -13,7 +13,9 @@ cdef int MAX_RESPONSE_CHUNK_SIZE = 61440  # 64kb
 
 
 cdef bytes write_header(tuple header):
-    return header[0] + b': ' + header[1] + b'\r\n'
+    cdef bytes name = <bytes>header[0] 
+    cdef bytes value = <bytes>header[1]
+    return name + b': ' + value + b'\r\n'
 
 
 cdef bytes write_headers(list headers):
@@ -105,6 +107,7 @@ cdef void set_headers_for_content(Message message):
 
     if should_use_chunked_encoding(content):
         message._add_header_if_missing(b'transfer-encoding', b'chunked')
+        message._add_header_if_missing(b'x-accel-buffering', b'no')
     else:
         message._add_header_if_missing(b'content-length', str(content.length).encode())
 
@@ -370,26 +373,17 @@ _NEW_LINES_RX = re.compile("\r\n|\n")
 
 cpdef bytes write_sse(ServerSentEvent event):
     """
-    Writes a ServerSentEvent object to bytes.
+    Writes a server sent event to bytes.
     """
     cdef bytearray value = bytearray()
-
-    if event.id:
-        value.extend(b"id: " + _NEW_LINES_RX.sub("", event.id).encode("utf8") + b"\r\n")
-
-    if event.comment:
-        for part in _NEW_LINES_RX.split(event.comment):
-            value.extend(b": " + part.encode("utf8") + b"\r\n")
-
-    if event.event:
-        value.extend(b"event: " + _NEW_LINES_RX.sub("", event.event).encode("utf8") + b"\r\n")
+    cdef bytes b_data = b""
 
     if event.data:
-        json_data = json_settings.raw_dumps(event.data) if not isinstance(event.data, str) else (event.data).encode("utf8")
-        value.extend(b"data: " + json_data + b"\r\n")
-
-    if event.retry > -1:
-        value.extend(b"retry: " + str(event.retry).encode() + b"\r\n")
+        if isinstance(event.data, str):
+            b_data = event.data.encode("utf8")
+        else:
+            b_data = json_settings.odumps(event.data)
+        value.extend(b"data: " + b_data + b"\r\n")
 
     value.extend(b"\r\n")
     return bytes(value)

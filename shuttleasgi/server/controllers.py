@@ -28,6 +28,7 @@ from shuttleasgi.server.responses import (
     not_found,
     not_modified,
     permanent_redirect,
+    pretty_json,
     pretty_orjson,
     redirect,
     see_other,
@@ -192,7 +193,19 @@ class Controller(metaclass=ControllerMeta):
         """
         return json(data, status)
 
-    def pretty_orjson(self, data: Any, status: int = 200, headers: list[tuple[bytes, bytes]] = None) -> Response:
+    def pretty_json(self, data: Any, status: int = 200, indent: int = 4) -> Response:
+        """
+        Returns a response with indented application/json content,
+        and given status (default HTTP 200 OK).
+        """
+        return pretty_json(data, status=status, indent=indent)
+
+    def pretty_orjson(
+        self,
+        data: Any,
+        status: int = 200,
+        headers: Optional[list[tuple[bytes, bytes]]] = None
+    ) -> Response:
         """
         Returns a response with indented application/json content,
         and given status (default HTTP 200 OK).
@@ -410,13 +423,13 @@ class APIController(Controller):
         Example:
             if version is 'v1', and base route 'cat'; all route handlers
             defined on the controller have prefix:
-            /api/v1/cat
+            /v1/cat
 
             if the class name ends with the version string, the suffix is
             automatically removed from routes, so:
             class CatV2; with version() -> "v2"; produces such routes:
-            /api/v2/cat
-            And not, ~/api/v2/catv2~!
+            /v2/cat
+            And not, ~/v2/catv2~!
         """
         return None
 
@@ -426,4 +439,4 @@ class APIController(Controller):
         cls_version = cls.version() or ""
         if cls_version and cls_name.endswith(cls_version.lower()):
             cls_name = cls_name[: -len(cls_version)]
-        return join_fragments("api", cls_version, cls_name)
+        return join_fragments(cls_version, cls_name)

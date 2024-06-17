@@ -4,7 +4,7 @@ from functools import lru_cache
 from io import BytesIO
 from typing import Any, AnyStr, AsyncIterable, Callable, Optional, Union
 
-from shuttleasgi import Content, JSONContent, ORJSONContent, Response, StreamedContent, TextContent
+from shuttleasgi import Content, ORJSONContent, Response, StreamedContent, TextContent
 from shuttleasgi.common.files.asyncfs import FilesHandler
 from shuttleasgi.settings.html import html_settings
 from shuttleasgi.settings.json import json_settings
@@ -32,8 +32,8 @@ def _ensure_bytes(value: AnyStr) -> bytes:
     raise ValueError("Input value must be bytes or str")
 
 
-def _json_serialize(obj) -> str:
-    return json_settings.dumps(obj)
+def _json_serialize(obj) -> bytes:
+    return json_settings.odumps(obj)
 
 
 def _json_content(obj) -> ORJSONContent:
@@ -196,15 +196,15 @@ def json(data: Any, status: int = 200) -> Response:
         None,
         Content(
             b"application/json",
-            json_settings.raw_dumps(data),
+            json_settings.odumps(data),
         ),
     )
 
 
-def pretty_orjson(
+def pretty_json(
     data: Any,
     status: int = 200,
-    headers: list[tuple[bytes, bytes]] = None,
+    headers: Optional[list[tuple[bytes, bytes]]] = None
 ) -> Response:
     """
     Returns a response with indented application/json content,
@@ -215,7 +215,26 @@ def pretty_orjson(
         headers,
         Content(
             b"application/json",
-            json_settings.raw_pretty_dumps(data),
+            json_settings.pretty_dumps(data).encode("utf8"),
+        ),
+    )
+
+
+def pretty_orjson(
+    data: Any,
+    status: int = 200,
+    headers: Optional[list[tuple[bytes, bytes]]] = None,
+) -> Response:
+    """
+    Returns a response with indented application/json content,
+    and given status (default HTTP 200 OK).
+    """
+    return Response(
+        status,
+        headers,
+        Content(
+            b"application/json",
+            json_settings.opretty_dumps(data),
         ),
     )
 

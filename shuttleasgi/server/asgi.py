@@ -15,7 +15,8 @@ def get_request_url_from_scope(
     Do not use this method for logic that must generate full request URL, since it
     doesn't handle Forward and X-Forwarded* headers - use instead:
 
-    > from shuttleasgi.messages import get_absolute_url_to_path, get_request_absolute_url
+    > from shuttleasgi.messages import (get_absolute_url_to_path,
+    > get_request_absolute_url)
     """
     try:
         path = scope["path"]
@@ -50,7 +51,8 @@ def get_request_url(request: Request) -> str:
     Do not use this method for logic that must generate full request URL, since it
     doesn't handle Forward and X-Forwarded* headers - use instead:
 
-    > from shuttleasgi.messages import get_absolute_url_to_path, get_request_absolute_url
+    > from shuttleasgi.messages import (get_absolute_url_to_path,
+    > get_request_absolute_url)
     """
     return get_request_url_from_scope(request.scope)
 

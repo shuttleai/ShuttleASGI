@@ -4,7 +4,8 @@ used types to reduce the verbosity of the imports statements.
 """
 
 __author__ = "Roberto Prevato <roberto.prevato@gmail.com>"
-__version__ = "3.0.7"
+__maintainer__ = "Christian D'Angelo <chris@shuttleai.app>"
+__version__ = "4.1.206"
 
 from .contents import Content as Content
 from .contents import FormContent as FormContent
@@ -57,6 +58,7 @@ from .server.responses import not_found as not_found
 from .server.responses import not_modified as not_modified
 from .server.responses import ok as ok
 from .server.responses import permanent_redirect as permanent_redirect
+from .server.responses import pretty_json as pretty_json
 from .server.responses import pretty_orjson as pretty_orjson
 from .server.responses import redirect as redirect
 from .server.responses import see_other as see_other

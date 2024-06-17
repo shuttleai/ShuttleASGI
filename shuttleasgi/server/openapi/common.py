@@ -7,7 +7,7 @@ OpenAPI Documentation v2 and v3 (currently only v3 is supported) from these type
 potentially in the future v4, if it will be so different from v3.
 """
 
-import orjson
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
@@ -25,6 +25,7 @@ from typing import (
     Union,
 )
 
+from essentials.json import dumps
 from openapidocs.common import Format, OpenAPIRoot, Serializer
 
 from shuttleasgi.messages import Request
@@ -384,7 +385,7 @@ class APIDocsHandler(Generic[OpenAPIRootType], ABC):
         This method is used to ensure that YAML representations of objects look
         exactly the same as JSON representations.
         """
-        return orjson.loads(orjson.dumps(value).decode('utf-8'))
+        return json.loads(dumps(value))
 
     @abstractmethod
     def generate_documentation(self, app: Application) -> OpenAPIRootType:

@@ -7,7 +7,8 @@ from guardpost.authorization import (
     UnauthorizedError,
 )
 
-from shuttleasgi import Request, Response, TextContent
+from shuttleasgi import Request, Response
+from shuttleasgi.exceptions import Unauthorized, Forbidden
 
 __all__ = (
     "auth",
@@ -104,21 +105,10 @@ def get_www_authenticated_header_from_generic_unauthorized_error(
 async def handle_unauthorized(
     app: Any, request: Request, http_exception: UnauthorizedError
 ) -> Response:
-    www_authenticate = get_www_authenticated_header_from_generic_unauthorized_error(
-        http_exception
-    )
-    return Response(
-        401,
-        [www_authenticate] if www_authenticate else None,
-        content=TextContent("Unauthorized"),
-    )
+    raise Unauthorized from http_exception
 
 
 async def handle_forbidden(
     app: Any, request: Request, http_exception: UnauthorizedError
 ):
-    return Response(
-        403,
-        None,
-        content=TextContent("Forbidden"),
-    )
+    raise Forbidden from http_exception

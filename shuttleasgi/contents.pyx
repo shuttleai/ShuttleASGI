@@ -1,4 +1,4 @@
-import orjson
+import json
 import uuid
 from collections.abc import MutableSequence
 from inspect import isasyncgenfunction
@@ -127,8 +127,8 @@ cdef class JSONContent(Content):
 
 cdef class ORJSONContent(Content):
 
-    def __init__(self, object data):
-        super().__init__(b'application/json', json_settings.raw_dumps(data))
+    def __init__(self, object data, dumps=json_settings.odumps):
+        super().__init__(b'application/json', dumps(data))
 
 
 cdef dict parse_www_form_urlencoded(str content):
@@ -285,30 +285,16 @@ cdef class ServerSentEvent:
 
     Attributes:
         data: An object that will be transmitted to the client, in JSON.
-        event: Optional event name.
-        id: Optional event ID to set the EventSource's last event ID value.
-        retry: The reconnection time. If the connection to the server is lost,
-               the browser will wait for the specified time before attempting
-               to reconnect.
-        comment: Optional comment.
     """
 
     def __init__(
         self,
         object data,
-        str event = None,
-        str id = None,
-        int retry = -1,
-        str comment = None,
     ):
         """
         Creates an instance of ServerSentEvent
         """
         self.data = data
-        self.event = event
-        self.id = id
-        self.retry = retry
-        self.comment = comment
 
     def __repr__(self):
         return f"ServerSentEvent({self.data})"

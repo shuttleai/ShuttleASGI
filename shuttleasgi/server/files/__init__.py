@@ -177,10 +177,11 @@ def get_default_extensions() -> Set[str]:
     return {
         ".txt",
         ".css",
-        ".py",
         ".js",
         ".jpeg",
         ".jpg",
+        ".html",
+        ".ico",
         ".png",
         ".woff",
         ".woff2",

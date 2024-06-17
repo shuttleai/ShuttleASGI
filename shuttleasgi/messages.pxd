@@ -1,7 +1,7 @@
 # cython: language_level=3, embedsignature=True
 # Copyright (C) 2018-present Roberto Prevato
 #
-# This module is part of BlackSheep and is released under
+# This module is part of ShuttleASGI and is released under
 # the MIT License https://opensource.org/licenses/MIT
 
 from .contents cimport Content, parse_www_form_urlencoded

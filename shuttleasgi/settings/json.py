@@ -1,44 +1,69 @@
-import orjson
+import orjson as json
+
 from typing import Any
+
+from essentials.json import dumps
 
 
 def default_json_dumps(obj) -> str:
-    return orjson.dumps(obj).decode() #, separators=(",", ":"))
+    return json.dumps(
+        obj,
+        option=json.OPT_SERIALIZE_NUMPY | json.OPT_SERIALIZE_UUID
+    ).decode("utf-8")
 
 
 def default_pretty_json_dumps(obj) -> str:
-    return orjson.dumps(obj, option=orjson.OPT_INDENT_2).decode()
+    return json.dumps(
+        obj,
+        option=json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+            | json.OPT_INDENT_2
+    ).decode("utf-8")
 
 
-def raw_json_dumps(obj) -> bytes:
-    return orjson.dumps(obj)
+def orjson_dumps(obj) -> bytes:
+    return json.dumps(
+        obj,
+        option=json.OPT_SERIALIZE_NUMPY | json.OPT_SERIALIZE_UUID
+    )
 
 
-def raw_pretty_json_dumps(obj) -> bytes:
-    return orjson.dumps(obj, option=orjson.OPT_INDENT_2)
+def orjson_pretty_dumps(obj) -> bytes:
+    return json.dumps(
+        obj,
+        option=json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+            | json.OPT_INDENT_2
+    )
+
+
+def builtin_json_dumps(obj) -> str:
+    return dumps(obj, separators=(",", ":"))
+
+
+def builtin_pretty_json_dumps(obj) -> str:
+    return dumps(obj, indent=4)
 
 
 class JSONSettings:
     def __init__(self):
-        self._loads = orjson.loads
+        self._loads = json.loads
         self._dumps = default_json_dumps
         self._pretty_dumps = default_pretty_json_dumps
-        self._raw_dumps = raw_json_dumps
-        self._raw_pretty_dumps = raw_pretty_json_dumps
+        self._odumps = orjson_dumps
+        self._opretty_dumps = orjson_pretty_dumps
 
     def use(
         self,
-        loads=orjson.loads,
+        loads=json.loads,
         dumps=default_json_dumps,
         pretty_dumps=default_pretty_json_dumps,
-        raw_dumps=raw_json_dumps,
-        raw_pretty_dumps=raw_pretty_json_dumps,
     ):
         self._loads = loads
         self._dumps = dumps
         self._pretty_dumps = pretty_dumps
-        self._raw_dumps = raw_dumps
-        self._raw_pretty_dumps = raw_pretty_dumps
+        self._odumps = orjson_dumps
+        self._opretty_dumps = orjson_pretty_dumps
 
     def loads(self, text: str) -> Any:
         return self._loads(text)
@@ -48,12 +73,12 @@ class JSONSettings:
 
     def pretty_dumps(self, obj: Any) -> str:
         return self._pretty_dumps(obj)
-    
-    def raw_dumps(self, obj: Any) -> bytes:
-        return self._raw_dumps(obj)
-    
-    def raw_pretty_dumps(self, obj: Any) -> bytes:
-        return self._raw_pretty_dumps(obj)
+
+    def odumps(self, obj: Any) -> bytes:
+        return self._odumps(obj)
+
+    def opretty_dumps(self, obj: Any) -> bytes:
+        return self._opretty_dumps(obj)
 
 
 json_settings = JSONSettings()

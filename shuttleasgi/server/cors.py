@@ -39,6 +39,7 @@ class CORSPolicy:
         return frozenset(
             value.lower()
             for value in {
+                "X-Accel-Buffering",
                 "Transfer-Encoding",
                 "Content-Encoding",
                 "Vary",

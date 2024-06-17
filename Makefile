@@ -2,47 +2,43 @@
 
 
 cyt:
-	cython shuttleasgi/url.pyx
-	cython shuttleasgi/exceptions.pyx
-	cython shuttleasgi/headers.pyx
-	cython shuttleasgi/cookies.pyx
-	cython shuttleasgi/contents.pyx
-	cython shuttleasgi/messages.pyx
-	cython shuttleasgi/scribe.pyx
-	cython shuttleasgi/baseapp.pyx
+	cython3 shuttleasgi/url.pyx
+	cython3 shuttleasgi/exceptions.pyx
+	cython3 shuttleasgi/headers.pyx
+	cython3 shuttleasgi/cookies.pyx
+	cython3 shuttleasgi/contents.pyx
+	cython3 shuttleasgi/messages.pyx
+	cython3 shuttleasgi/scribe.pyx
+	cython3 shuttleasgi/baseapp.pyx
 
 compile: cyt
-	python setup.py build_ext --inplace
+	python3 setup.py build_ext --inplace
 
 
 clean:
-	del /Q dist
-	del /Q build
-	del /Q shuttleasgi\*.c
-	del /Q shuttleasgi\*.so
+	rm -rf dist/
+	rm -rf build/
+	rm -f shuttleasgi/*.c
+	rm -f shuttleasgi/*.so
 
 
 buildext:
-	python setup.py build_ext --inplace
+	python3 setup.py build_ext --inplace
 
 
 annotate:
-	cython shuttleasgi/url.pyx -a
-	cython shuttleasgi/exceptions.pyx -a
-	cython shuttleasgi/headers.pyx -a
-	cython shuttleasgi/cookies.pyx -a
-	cython shuttleasgi/contents.pyx -a
-	cython shuttleasgi/messages.pyx -a
-	cython shuttleasgi/scribe.pyx -a
-	cython shuttleasgi/baseapp.pyx -a
+	cython3 shuttleasgi/url.pyx -a
+	cython3 shuttleasgi/exceptions.pyx -a
+	cython3 shuttleasgi/headers.pyx -a
+	cython3 shuttleasgi/cookies.pyx -a
+	cython3 shuttleasgi/contents.pyx -a
+	cython3 shuttleasgi/messages.pyx -a
+	cython3 shuttleasgi/scribe.pyx -a
+	cython3 shuttleasgi/baseapp.pyx -a
 
 
-build:
-	python -m build
-
-
-build2:
-	python setup.py bdist_wheel
+build: test
+	python3 -m build
 
 
 prepforbuild:
@@ -53,7 +49,7 @@ testrelease:
 	twine upload -r testpypi dist/*
 
 
-release: clean compile annotate prepforbuild build build2
+release: clean compile artifacts
 	twine upload -r pypi dist/*
 
 

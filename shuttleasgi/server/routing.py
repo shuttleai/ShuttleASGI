@@ -93,7 +93,7 @@ class SharedRouterError(InvalidRouterConfigurationError):
             "than one Application object. When working with multiple applications, "
             "ensure that each application is configured to use different routers. "
             "For more information, refer to: "
-            "https://www.neoteroi.dev/blacksheep/routing/"
+            "https://www.neoteroi.dev/shuttleasgi/routing/"
         )
 
 
@@ -266,7 +266,7 @@ class Route:
         Converts a raw pattern into a compiled regular expression that can be used
         to match bytes URL paths, extracting route parameters.
         """
-        # TODO: should blacksheep support ":" in routes (using escape chars)?
+        # TODO: should shuttleasgi support ":" in routes (using escape chars)?
         for c in _escaped_chars:
             if c in pattern:
                 pattern = pattern.replace(c, b"\\" + c)
@@ -805,24 +805,29 @@ class Router(RouterBase):
         Gets a match for the given request, by method and request path.
         """
         return self.get_match_by_method_and_path(request.method, request._path)
-    
-    def get_match_ignore_method(self, request: Request) -> Optional[RouteMatch]:
+
+    def get_match_disregard_method(self, request: Request) -> Optional[RouteMatch]:
         """
-        Gets a match for the given request, by request path, regardless of method.
+        Gets a match for the given request, disregarding the method.
         """
-        return self.get_match_by_path_any_method(request._path)
-    
+        return self.get_match_by_path_disregard_method(request._path)
+
     @lru_cache(maxsize=1200)
-    def get_match_by_path_any_method(self, path: AnyStr) -> Optional[RouteMatch]:
+    def get_match_by_path_disregard_method(
+        self, path: AnyStr
+    ) -> Optional[RouteMatch]:
         bytes_value = ensure_bytes(path)
         for method, routes in self.routes.items():
-            if method == b"OPTIONS":
+            if method not in {b"GET", b"POST"}:
                 continue
             for route in routes:
                 match = route.match_by_path(bytes_value)
                 if match:
                     return match
-        return None
+        if self._fallback is None:
+            return None
+
+        return RouteMatch(self._fallback, None)
 
     @lru_cache(maxsize=1200)
     def get_match_by_method_and_path(
@@ -889,6 +894,9 @@ class RoutesRegistry(RouterBase):
 
     def __iter__(self):
         yield from self.routes
+
+    def get_same_method_routes(self, method: str) -> set[str]:
+        return {route.pattern for route in self.routes if route.method == method}
 
     def add(
         self,
@@ -972,7 +980,7 @@ def validate_router(app):
         ):
             # This is the same application! This can happen when imported dynamically
             # by uvicorn reload feature, when uvicorn is started programmatically.
-            # See https://github.com/Neoteroi/BlackSheep/issues/438
+            # See https://github.com/Neoteroi/ShuttleASGI/issues/438
             logging.getLogger("shuttleasgi.server").warning(
                 "The application was reloaded, resetting its router."
             )

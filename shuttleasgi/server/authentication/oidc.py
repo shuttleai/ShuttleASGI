@@ -1039,7 +1039,7 @@ def use_openid_connect(
         Lets specify the object that is responsible of handling responses to communicate
         tokens to the client and restoring user context for web requests.
         If not specified, the default CookiesOpenIDTokensHandler class is used.
-        BlackSheep offers two kinds of this class out of the box: one that uses cookies
+        ShuttleASGI offers two kinds of this class out of the box: one that uses cookies
         and, for more advanced situations, one that uses the HTML5 storage API to set
         tokens on the client side. See [the OIDC
         examples](https://github.com/Neoteroi/BlackSheep-Examples/tree/main/oidc)
