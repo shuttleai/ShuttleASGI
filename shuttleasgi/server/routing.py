@@ -895,9 +895,6 @@ class RoutesRegistry(RouterBase):
     def __iter__(self):
         yield from self.routes
 
-    def get_same_method_routes(self, method: str) -> set[str]:
-        return {route.pattern for route in self.routes if route.method == method}
-
     def add(
         self,
         method: str,
