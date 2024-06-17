@@ -2,14 +2,14 @@
 
 
 cyt:
-	cython3 shuttleasgi/url.pyx
-	cython3 shuttleasgi/exceptions.pyx
-	cython3 shuttleasgi/headers.pyx
-	cython3 shuttleasgi/cookies.pyx
-	cython3 shuttleasgi/contents.pyx
-	cython3 shuttleasgi/messages.pyx
-	cython3 shuttleasgi/scribe.pyx
-	cython3 shuttleasgi/baseapp.pyx
+	cython shuttleasgi/url.pyx
+	cython shuttleasgi/exceptions.pyx
+	cython shuttleasgi/headers.pyx
+	cython shuttleasgi/cookies.pyx
+	cython shuttleasgi/contents.pyx
+	cython shuttleasgi/messages.pyx
+	cython shuttleasgi/scribe.pyx
+	cython shuttleasgi/baseapp.pyx
 
 compile: cyt
 	python3 setup.py build_ext --inplace
@@ -27,14 +27,14 @@ buildext:
 
 
 annotate:
-	cython3 shuttleasgi/url.pyx -a
-	cython3 shuttleasgi/exceptions.pyx -a
-	cython3 shuttleasgi/headers.pyx -a
-	cython3 shuttleasgi/cookies.pyx -a
-	cython3 shuttleasgi/contents.pyx -a
-	cython3 shuttleasgi/messages.pyx -a
-	cython3 shuttleasgi/scribe.pyx -a
-	cython3 shuttleasgi/baseapp.pyx -a
+	cython shuttleasgi/url.pyx -a
+	cython shuttleasgi/exceptions.pyx -a
+	cython shuttleasgi/headers.pyx -a
+	cython shuttleasgi/cookies.pyx -a
+	cython shuttleasgi/contents.pyx -a
+	cython shuttleasgi/messages.pyx -a
+	cython shuttleasgi/scribe.pyx -a
+	cython shuttleasgi/baseapp.pyx -a
 
 
 build: test
