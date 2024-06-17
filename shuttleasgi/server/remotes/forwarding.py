@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network, ip_address
-from typing import List, Optional, Sequence, Union
+from typing import AnyStr, Iterable, List, Optional, Sequence, Union
 
 from shuttleasgi.exceptions import BadRequest
 from shuttleasgi.headers import Headers
@@ -86,6 +86,68 @@ class BaseForwardedHeadersMiddleware(TrustedHostsMiddleware, ABC):
     @abstractmethod
     async def __call__(self, request: Request, handler):
         """Middleware callback."""
+
+
+class ForwardedHeaderEntry:
+    def __init__(
+        self,
+        forwarded_for: str,
+        forwarded_by: str = "",
+        # forwarded_host: str = "",
+        # forwarded_proto: str = "",
+    ):
+        self.forwarded_for = forwarded_for
+        self.forwarded_by = forwarded_by
+        # self.forwarded_host = forwarded_host
+        # self.forwarded_proto = forwarded_proto
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, ForwardedHeaderEntry):
+            return self.__dict__ == o.__dict__
+        if isinstance(o, dict):
+            return self.__dict__ == o
+        return False
+
+
+def _strip_chars(value):
+    return value.strip('"[').replace("]", "")
+
+
+def parse_forwarded_header(header_value: AnyStr) -> Iterable[ForwardedHeaderEntry]:
+    if isinstance(header_value, bytes):
+        value = header_value.decode()
+    else:
+        value = header_value
+
+    groups = value.split(",")
+
+    for group in groups:
+        group = group.strip()
+        directives = group.split(";")
+
+        forwarded_for: str = ""
+        forwarded_by: str = ""
+        # forwarded_host: str = ""
+        # forwarded_proto: str = ""
+
+        for directive in directives:
+            directive = directive.strip()
+
+            if directive.lower().startswith("for="):
+                forwarded_for = _strip_chars(directive[4:])
+
+            if directive.lower().startswith("by="):
+                forwarded_by = _strip_chars(directive[3:])
+
+            # if directive.lower().startswith("host="):
+            #     forwarded_host = _strip_chars(directive[5:])
+
+            # if directive.lower().startswith("proto="):
+            #     forwarded_proto = _strip_chars(directive[6:])
+
+        yield ForwardedHeaderEntry(
+            forwarded_for, forwarded_by  #, forwarded_host, forwarded_proto
+        )
 
 
 class XForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
