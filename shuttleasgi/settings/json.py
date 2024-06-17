@@ -8,32 +8,42 @@ from essentials.json import dumps
 def default_json_dumps(obj) -> str:
     return json.dumps(
         obj,
-        option=json.OPT_SERIALIZE_NUMPY | json.OPT_SERIALIZE_UUID
+        option=(
+            json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+        )
     ).decode("utf-8")
 
 
 def default_pretty_json_dumps(obj) -> str:
     return json.dumps(
         obj,
-        option=json.OPT_SERIALIZE_NUMPY
+        option=(
+            json.OPT_SERIALIZE_NUMPY
             | json.OPT_SERIALIZE_UUID
             | json.OPT_INDENT_2
+        )
     ).decode("utf-8")
 
 
 def orjson_dumps(obj) -> bytes:
     return json.dumps(
         obj,
-        option=json.OPT_SERIALIZE_NUMPY | json.OPT_SERIALIZE_UUID
+        option=(
+            json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+        )
     )
 
 
 def orjson_pretty_dumps(obj) -> bytes:
     return json.dumps(
         obj,
-        option=json.OPT_SERIALIZE_NUMPY
+        option=(
+            json.OPT_SERIALIZE_NUMPY
             | json.OPT_SERIALIZE_UUID
             | json.OPT_INDENT_2
+        )
     )
 
 
