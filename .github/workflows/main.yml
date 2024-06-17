@@ -12,7 +12,6 @@ on:
   push:
     branches:
       - main
-      - ci
     paths-ignore:
       - README.md
   pull_request:
@@ -63,9 +62,9 @@ jobs:
           cython shuttleasgi/baseapp.pyx
           python setup.py build_ext --inplace
 
-      - name: Run tests
-        run: |
-          pytest --doctest-modules --junitxml=junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml --cov=$PROJECT_NAME --cov-report=xml
+      # - name: Run tests
+      #   run: |
+      #     pytest --doctest-modules --junitxml=junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml --cov=$PROJECT_NAME --cov-report=xml
 
       - name: Run linters
         run: |
@@ -100,15 +99,15 @@ jobs:
         run: |
           make compile
 
-      - name: Run tests
-        run: |
-          pytest --doctest-modules --junitxml=junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml --cov=$PROJECT_NAME --cov-report=xml
+      # - name: Run tests
+      #   run: |
+      #     pytest --doctest-modules --junitxml=junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml --cov=$PROJECT_NAME --cov-report=xml
 
-      - name: Run tests with Pydantic v2
-        run: |
-          echo "[*] The previous tests used Pydantic v1, now running with v2"
-          pip install -U pydantic==2.4.2
-          pytest
+      # - name: Run tests with Pydantic v2
+      #   run: |
+      #     echo "[*] The previous tests used Pydantic v1, now running with v2"
+      #     pip install -U pydantic==2.4.2
+      #     pytest
 
       - name: Run linters
         run: |

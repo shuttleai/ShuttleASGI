@@ -9,6 +9,8 @@ from typing import (
     Sequence,
     Type,
     Union,
+    List,
+    Tuple,
 )
 
 from shuttleasgi import Request, Response
@@ -204,7 +206,7 @@ class Controller(metaclass=ControllerMeta):
         self,
         data: Any,
         status: int = 200,
-        headers: Optional[list[tuple[bytes, bytes]]] = None
+        headers: Optional[List[Tuple[bytes, bytes]]] = None
     ) -> Response:
         """
         Returns a response with indented application/json content,

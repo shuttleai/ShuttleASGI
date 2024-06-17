@@ -2,7 +2,7 @@ import ntpath
 from enum import Enum
 from functools import lru_cache
 from io import BytesIO
-from typing import Any, AnyStr, AsyncIterable, Callable, Optional, Union
+from typing import Any, AnyStr, AsyncIterable, Callable, Optional, Union, List, Tuple
 
 from shuttleasgi import Content, ORJSONContent, Response, StreamedContent, TextContent
 from shuttleasgi.common.files.asyncfs import FilesHandler
@@ -204,7 +204,7 @@ def json(data: Any, status: int = 200) -> Response:
 def pretty_json(
     data: Any,
     status: int = 200,
-    headers: Optional[list[tuple[bytes, bytes]]] = None
+    headers: Optional[List[Tuple[bytes, bytes]]] = None
 ) -> Response:
     """
     Returns a response with indented application/json content,
@@ -223,7 +223,7 @@ def pretty_json(
 def pretty_orjson(
     data: Any,
     status: int = 200,
-    headers: Optional[list[tuple[bytes, bytes]]] = None,
+    headers: Optional[List[Tuple[bytes, bytes]]] = None,
 ) -> Response:
     """
     Returns a response with indented application/json content,
