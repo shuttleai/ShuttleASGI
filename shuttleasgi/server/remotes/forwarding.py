@@ -146,7 +146,7 @@ def parse_forwarded_header(header_value: AnyStr) -> Iterable[ForwardedHeaderEntr
             #     forwarded_proto = _strip_chars(directive[6:])
 
         yield ForwardedHeaderEntry(
-            forwarded_for, forwarded_by  #, forwarded_host, forwarded_proto
+            forwarded_for, forwarded_by  # , forwarded_host, forwarded_proto
         )
 
 
