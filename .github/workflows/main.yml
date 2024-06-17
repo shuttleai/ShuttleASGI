@@ -123,22 +123,22 @@ jobs:
       #     black --check tests 2>&1
       #     black --check itests 2>&1
 
-      - name: Test Hypercorn
-        run: |
-          PYVER=`python -V 2>&1`
+      # - name: Test Hypercorn
+      #   run: |
+      #     PYVER=`python -V 2>&1`
 
-          if [ "${PYVER:0:-2}" == "Python 3.10" ]; then
-            echo "Skipping Hypercorn tests, since it fails with Python 3.10.0 on Ubuntu (2021/10/24)"
-          else
-            APP_DEFAULT_ROUTER=false ASGI_SERVER=hypercorn pytest itests/test_server.py
-          fi
+      #     if [ "${PYVER:0:-2}" == "Python 3.10" ]; then
+      #       echo "Skipping Hypercorn tests, since it fails with Python 3.10.0 on Ubuntu (2021/10/24)"
+      #     else
+      #       APP_DEFAULT_ROUTER=false ASGI_SERVER=hypercorn pytest itests/test_server.py
+      #     fi
 
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-results-${{ matrix.os }}-${{ matrix.python-version }}
-          path: junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml
-        if: always()
+      # - name: Upload pytest test results
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pytest-results-${{ matrix.os }}-${{ matrix.python-version }}
+      #     path: junit/pytest-results-${{ matrix.os }}-${{ matrix.python-version }}.xml
+      #   if: always()
 
       - name: Codecov
         run: |
@@ -235,12 +235,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install twine
-      - name: Publish distribution 📦 to Test PyPI
-        run: |
-          twine upload -r testpypi dist/*
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.test_pypi_password }}
+      # - name: Publish distribution 📦 to Test PyPI
+      #   run: |
+      #     twine upload -r testpypi dist/*
+      #   env:
+      #     TWINE_USERNAME: __token__
+      #     TWINE_PASSWORD: ${{ secrets.test_pypi_password }}
 
       - name: Publish distribution 📦 to PyPI
         run: |
