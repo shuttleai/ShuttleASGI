@@ -24,7 +24,7 @@ The official framework used and made by the [ShuttleAI API](https://api.shuttlea
 
 - 📡 OpenAI-formatted SSE responses
 
-- 🐍 Built on top of the popular BlackSheep framework
+- 🐍 Built on top of the super fast [BlackSheep](https://github.com/Neoteroi/BlackSheep) framework
 
 ## Installation
 
