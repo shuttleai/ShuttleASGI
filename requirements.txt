@@ -59,3 +59,4 @@ zope.event==5.0
 zope.interface==6.1
 orjson
 python-dotenv
+uuid_utils
