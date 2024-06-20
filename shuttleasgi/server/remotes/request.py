@@ -1,6 +1,6 @@
 from shuttleasgi.messages import Request
 
-import uuid
+import uuid_utils as uuid
 
 
 class RequestIDMiddleware:
