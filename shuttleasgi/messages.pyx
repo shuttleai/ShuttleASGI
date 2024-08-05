@@ -1,7 +1,7 @@
 import asyncio
 import http
 import re
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from json.decoder import JSONDecodeError
 from urllib.parse import parse_qs, quote, unquote, urlencode
 
@@ -314,6 +314,7 @@ cdef class Request(Message):
             self._path = _url.path
             self._raw_query = _url.query
         self.sai = {}
+        self.start_time = datetime.now(UTC)
 
     @property
     def identity(self):

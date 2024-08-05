@@ -4,8 +4,8 @@ used types to reduce the verbosity of the imports statements.
 """
 
 __author__ = "Roberto Prevato <roberto.prevato@gmail.com>"
-__maintainer__ = "Christian D'Angelo <chris@shuttleai.app>"
-__version__ = "4.4.4"
+__maintainer__ = "Christian Heru <chris@shuttleai.app>"
+__version__ = "5.5.5"
 
 from .contents import Content as Content
 from .contents import FormContent as FormContent
