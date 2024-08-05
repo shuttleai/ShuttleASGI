@@ -186,14 +186,14 @@ def html(value: str, status: int = 200) -> Response:
     )
 
 
-def json(data: Any, status: int = 200) -> Response:
+def json(data: Any, status: int = 200, headers: Optional[List[Tuple[bytes, bytes]]] = None) -> Response:
     """
     Returns a response with application/json content,
     and given status (default HTTP 200 OK).
     """
     return Response(
         status,
-        None,
+        headers,
         Content(
             b"application/json",
             json_settings.odumps(data),

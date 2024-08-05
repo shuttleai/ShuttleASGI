@@ -2,6 +2,8 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Sequence, Uni
 
 from guardpost import Identity
 
+from datetime import datetime, time
+
 from .asgi import ASGIScopeInterface
 from .contents import Content, FormPart
 from .cookies import Cookie
@@ -70,6 +72,8 @@ class Request(Message):
         self.user: Optional[Identity] = ...
         self.scope: ASGIScopeInterface = ...
         self._session: Optional[Session]
+        self.start_time: datetime
+
 
     @classmethod
     def incoming(

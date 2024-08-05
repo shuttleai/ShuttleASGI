@@ -10,7 +10,7 @@ class RequestIDMiddleware:
 
     async def __call__(self, request: Request, handler):
         value: bytes = self.prefix + uuid.uuid4().hex.encode("utf-8")
-        request.sai["raw_req_id"] = value
+        request.sai["req_id"] = value
 
         response = await handler(request)
 
