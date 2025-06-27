@@ -2,14 +2,14 @@ import http
 
 import pytest
 
-from blacksheep import URL, HTMLContent, Response, TextContent
-from blacksheep.client import (
+from shuttleasgi import URL, HTMLContent, Response, TextContent
+from shuttleasgi.client import (
     CircularRedirectError,
     ClientSession,
     MaximumRedirectsExceededError,
 )
-from blacksheep.client.exceptions import MissingLocationForRedirect
-from blacksheep.client.session import RedirectsCache
+from shuttleasgi.client.exceptions import MissingLocationForRedirect
+from shuttleasgi.client.session import RedirectsCache
 
 from . import FakePools
 

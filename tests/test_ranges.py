@@ -1,6 +1,6 @@
 import pytest
 
-from blacksheep.ranges import InvalidRangeValue, Range, RangePart
+from shuttleasgi.ranges import InvalidRangeValue, Range, RangePart
 
 
 @pytest.mark.parametrize(

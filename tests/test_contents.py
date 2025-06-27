@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from blacksheep import JSONContent, Request
-from blacksheep.contents import (
+from shuttleasgi import JSONContent, Request
+from shuttleasgi.contents import (
     FormPart,
     HTMLContent,
     MultiPartFormData,
@@ -12,12 +12,12 @@ from blacksheep.contents import (
     parse_www_form,
     write_www_form_urlencoded,
 )
-from blacksheep.multipart import (
+from shuttleasgi.multipart import (
     get_boundary_from_header,
     parse_content_disposition_values,
     parse_multipart,
 )
-from blacksheep.scribe import write_chunks, write_request_body_only
+from shuttleasgi.scribe import write_chunks, write_request_body_only
 
 
 async def test_chunked_encoding_with_generated_content():

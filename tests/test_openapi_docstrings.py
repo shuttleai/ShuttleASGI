@@ -2,8 +2,8 @@ from typing import List
 
 import pytest
 
-from blacksheep.server.openapi.common import ParameterInfo
-from blacksheep.server.openapi.docstrings import (
+from shuttleasgi.server.openapi.common import ParameterInfo
+from shuttleasgi.server.openapi.docstrings import (
     DocstringInfo,
     EpytextDialect,
     GoogleDocDialect,

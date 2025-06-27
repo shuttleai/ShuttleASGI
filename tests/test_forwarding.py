@@ -2,15 +2,15 @@ from ipaddress import ip_address, ip_network
 
 import pytest
 
-from blacksheep.server.remotes.forwarding import (
+from shuttleasgi.server.remotes.forwarding import (
     ForwardedHeaderEntry,
     ForwardedHeadersMiddleware,
     XForwardedHeadersMiddleware,
     parse_forwarded_header,
 )
-from blacksheep.server.remotes.hosts import TrustedHostsMiddleware
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.remotes.hosts import TrustedHostsMiddleware
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.utils.application import FakeApplication
 
 

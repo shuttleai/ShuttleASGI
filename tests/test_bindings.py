@@ -6,8 +6,8 @@ from guardpost import Identity
 from pytest import raises
 from rodi import Container
 
-from blacksheep import FormContent, FormPart, JSONContent, MultiPartFormData, Request
-from blacksheep.server.bindings import (
+from shuttleasgi import FormContent, FormPart, JSONContent, MultiPartFormData, Request
+from shuttleasgi.server.bindings import (
     BadRequest,
     Binder,
     BinderAlreadyDefinedException,
@@ -32,7 +32,7 @@ from blacksheep.server.bindings import (
     TypeAliasAlreadyDefinedException,
     get_binder_by_type,
 )
-from blacksheep.url import URL
+from shuttleasgi.url import URL
 
 JSONContentType = (b"Content-Type", b"application/json")
 

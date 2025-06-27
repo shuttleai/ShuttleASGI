@@ -5,7 +5,7 @@ import pathlib
 
 import uvicorn
 
-from blacksheep import (
+from shuttleasgi import (
     Application,
     Content,
     ContentDispositionType,
@@ -17,8 +17,8 @@ from blacksheep import (
     json,
     text,
 )
-from blacksheep.contents import ASGIContent
-from blacksheep.server.compression import use_gzip_compression
+from shuttleasgi.contents import ASGIContent
+from shuttleasgi.server.compression import use_gzip_compression
 from itests.utils import CrashTest, ensure_folder
 
 app = Application(show_error_details=True)

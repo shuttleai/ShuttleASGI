@@ -1,5 +1,5 @@
-from blacksheep import Response, TextContent
-from blacksheep.client import ClientSession
+from shuttleasgi import Response, TextContent
+from shuttleasgi.client import ClientSession
 
 from . import FakePools
 

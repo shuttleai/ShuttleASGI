@@ -2,15 +2,15 @@ import time
 
 import pytest
 
-from blacksheep.cookies import parse_cookie
-from blacksheep.messages import Request
-from blacksheep.server.responses import text
-from blacksheep.sessions import Session
-from blacksheep.sessions.cookies import CookieSessionStore
-from blacksheep.sessions.json import JSONSerializer
-from blacksheep.sessions.memory import InMemorySessionStore
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.cookies import parse_cookie
+from shuttleasgi.messages import Request
+from shuttleasgi.server.responses import text
+from shuttleasgi.sessions import Session
+from shuttleasgi.sessions.cookies import CookieSessionStore
+from shuttleasgi.sessions.json import JSONSerializer
+from shuttleasgi.sessions.memory import InMemorySessionStore
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 
 
 def test_friendly_exception_for_request_without_session():

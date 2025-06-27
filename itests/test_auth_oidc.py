@@ -14,15 +14,15 @@ import pytest
 from guardpost import Identity, Policy
 from guardpost.common import AuthenticatedRequirement
 
-from blacksheep.contents import Content
-from blacksheep.cookies import parse_cookie
-from blacksheep.exceptions import BadRequest, Unauthorized
-from blacksheep.messages import Request, Response
-from blacksheep.server.application import Application
-from blacksheep.server.asgi import incoming_request
-from blacksheep.server.authentication.cookie import CookieAuthentication
-from blacksheep.server.authentication.jwt import JWTBearerAuthentication
-from blacksheep.server.authentication.oidc import (
+from shuttleasgi.contents import Content
+from shuttleasgi.cookies import parse_cookie
+from shuttleasgi.exceptions import BadRequest, Unauthorized
+from shuttleasgi.messages import Request, Response
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.asgi import incoming_request
+from shuttleasgi.server.authentication.cookie import CookieAuthentication
+from shuttleasgi.server.authentication.jwt import JWTBearerAuthentication
+from shuttleasgi.server.authentication.oidc import (
     CookiesOpenIDTokensHandler,
     CookiesTokensStore,
     IDToken,
@@ -40,11 +40,11 @@ from blacksheep.server.authentication.oidc import (
     TokensStore,
     use_openid_connect,
 )
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
-from blacksheep.url import URL
-from blacksheep.utils.aio import FailedRequestError
-from blacksheep.utils.time import utcnow
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
+from shuttleasgi.url import URL
+from shuttleasgi.utils.aio import FailedRequestError
+from shuttleasgi.utils.time import utcnow
 from itests import client_fixtures  # noqa
 from tests.test_auth import get_token
 from tests.test_auth_cookie import get_auth_cookie

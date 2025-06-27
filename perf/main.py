@@ -1,5 +1,5 @@
 """
-BlackSheep performance benchmarking suite.
+ShuttleASGI performance benchmarking suite.
 Refer to the README for details.
 """
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 import psutil
 
-from blacksheep import __version__ as blacksheep_version
+from shuttleasgi import __version__ as shuttleasgi_version
 
 
 def collect_benchmark_functions(package_name: str):
@@ -128,7 +128,7 @@ def get_system_info():
         "memory_total": psutil.virtual_memory().total,
         "python_version": sys.version.split()[0],
         "python_implementation": platform.python_implementation(),
-        "blacksheep_version": blacksheep_version,
+        "shuttleasgi_version": shuttleasgi_version,
         "platform": platform.platform(),
     }
 
@@ -178,7 +178,7 @@ def save_results(results, output_dir="./benchmark_results"):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     unique_id = uuid.uuid4().hex[:8]  # Generate a short UUID
 
-    filename = f"{output_dir}/blacksheep_perf_{git_hash}_{timestamp}_{unique_id}.json"
+    filename = f"{output_dir}/shuttleasgi_perf_{git_hash}_{timestamp}_{unique_id}.json"
 
     with open(filename, "w") as f:
         json.dump(results, f, indent=2)
@@ -188,7 +188,7 @@ def save_results(results, output_dir="./benchmark_results"):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="BlackSheep Performance Benchmarking")
+    parser = argparse.ArgumentParser(description="ShuttleASGI Performance Benchmarking")
     parser.add_argument(
         "--iterations", type=int, default=100000, help="Number of iterations"
     )

@@ -7,8 +7,8 @@ from time import sleep
 
 import pytest
 
-from blacksheep.client import ClientSession
-from blacksheep.client.pool import ConnectionPools
+from shuttleasgi.client import ClientSession
+from shuttleasgi.client.pool import ConnectionPools
 from itests.utils import get_sleep_time
 
 from .flask_app import app

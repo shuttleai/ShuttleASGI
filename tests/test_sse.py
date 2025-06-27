@@ -1,7 +1,7 @@
 import pytest
 
-from blacksheep.contents import ServerSentEvent
-from blacksheep.server.sse import ServerSentEventsResponse
+from shuttleasgi.contents import ServerSentEvent
+from shuttleasgi.server.sse import ServerSentEventsResponse
 
 
 @pytest.mark.asyncio

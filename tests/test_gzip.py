@@ -2,9 +2,9 @@ import gzip
 
 import pytest
 
-from blacksheep.server.compression import GzipMiddleware
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.compression import GzipMiddleware
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 
 
 @pytest.mark.parametrize(

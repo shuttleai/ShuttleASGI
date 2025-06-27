@@ -4,15 +4,15 @@ from typing import AsyncIterable, List
 
 import pytest
 
-from blacksheep import JSONContent, Request, StreamedContent
-from blacksheep.client.connection import (
+from shuttleasgi import JSONContent, Request, StreamedContent
+from shuttleasgi.client.connection import (
     ClientConnection,
     ConnectionClosedError,
     IncomingContent,
     InvalidResponseFromServer,
     UpgradeResponse,
 )
-from blacksheep.client.pool import ConnectionPool
+from shuttleasgi.client.pool import ConnectionPool
 
 
 def get_example_headers():

@@ -2,18 +2,18 @@
 URL methods.
 """
 
-from blacksheep.url import URL
+from shuttleasgi.url import URL
 from perf.benchmarks import main_run, sync_benchmark
 
 ITERATIONS = 10000
 
 
 def test_url_instantiate():
-    url = URL(b"https://www.neoteroi.dev/blacksheep/?super=yes#some-hash")
-    assert url.value == b"https://www.neoteroi.dev/blacksheep/?super=yes#some-hash"
+    url = URL(b"https://www.neoteroi.dev/shuttleasgi/?super=yes#some-hash")
+    assert url.value == b"https://www.neoteroi.dev/shuttleasgi/?super=yes#some-hash"
     assert url.host == b"www.neoteroi.dev"
     assert url.port in {0, 443}
-    assert url.path == b"/blacksheep/"
+    assert url.path == b"/shuttleasgi/"
     assert url.query == b"super=yes"
     assert url.is_absolute is True
     assert url.schema == b"https"

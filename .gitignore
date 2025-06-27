@@ -113,9 +113,9 @@ tests/out/
 
 *,cover
 
-blacksheep/*.c
-blacksheep/*.html
-blacksheep/includes/*.html
+shuttleasgi/*.c
+shuttleasgi/*.html
+shuttleasgi/includes/*.html
 out/*
 
 # Output of integration tests

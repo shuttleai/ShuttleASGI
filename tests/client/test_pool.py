@@ -2,14 +2,14 @@ import ssl
 
 import pytest
 
-from blacksheep.client.connection import (
+from shuttleasgi.client.connection import (
     INSECURE_SSLCONTEXT,
     SECURE_SSLCONTEXT,
     ClientConnection,
 )
-from blacksheep.client.pool import ConnectionPool, get_ssl_context
-from blacksheep.exceptions import InvalidArgument
-from blacksheep.utils.aio import get_running_loop
+from shuttleasgi.client.pool import ConnectionPool, get_ssl_context
+from shuttleasgi.exceptions import InvalidArgument
+from shuttleasgi.utils.aio import get_running_loop
 
 example_context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_CLIENT)
 example_context.check_hostname = False

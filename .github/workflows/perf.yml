@@ -1,5 +1,5 @@
 ####################################################################################
-# Runs benchmarks for BlackSheep source code for various versions of Python
+# Runs benchmarks for ShuttleASGI source code for various versions of Python
 # and Operating System and publishes the results.
 # See the perf folder for more information.
 ####################################################################################
@@ -39,14 +39,14 @@ jobs:
 
       - name: Compile Cython extensions
         run: |
-          cython blacksheep/url.pyx
-          cython blacksheep/exceptions.pyx
-          cython blacksheep/headers.pyx
-          cython blacksheep/cookies.pyx
-          cython blacksheep/contents.pyx
-          cython blacksheep/messages.pyx
-          cython blacksheep/scribe.pyx
-          cython blacksheep/baseapp.pyx
+          cython shuttleasgi/url.pyx
+          cython shuttleasgi/exceptions.pyx
+          cython shuttleasgi/headers.pyx
+          cython shuttleasgi/cookies.pyx
+          cython shuttleasgi/contents.pyx
+          cython shuttleasgi/messages.pyx
+          cython shuttleasgi/scribe.pyx
+          cython shuttleasgi/baseapp.pyx
           python setup.py build_ext --inplace
 
       - name: Install dependencies for benchmark

@@ -2,17 +2,17 @@ from datetime import timedelta
 
 import pytest
 
-from blacksheep import URL, Cookie, Response, TextContent
-from blacksheep.client import ClientSession
-from blacksheep.client.cookies import (
+from shuttleasgi import URL, Cookie, Response, TextContent
+from shuttleasgi.client import ClientSession
+from shuttleasgi.client.cookies import (
     CookieJar,
     InvalidCookieDomain,
     MissingSchemeInURL,
     StoredCookie,
 )
-from blacksheep.cookies import datetime_from_cookie_format
-from blacksheep.scribe import write_response_cookie
-from blacksheep.utils.time import utcnow
+from shuttleasgi.cookies import datetime_from_cookie_format
+from shuttleasgi.scribe import write_response_cookie
+from shuttleasgi.utils.time import utcnow
 
 from . import FakePools
 

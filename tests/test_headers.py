@@ -1,6 +1,6 @@
 import pytest
 
-from blacksheep import Header, Headers
+from shuttleasgi import Header, Headers
 
 
 @pytest.mark.parametrize(

@@ -7,11 +7,11 @@ from unittest.mock import create_autospec
 import pytest
 from essentials.folders import get_file_extension
 
-from blacksheep import Application, Request
-from blacksheep.common.files.asyncfs import FileContext, FilesHandler
-from blacksheep.exceptions import BadRequest, InvalidArgument
-from blacksheep.ranges import Range, RangePart
-from blacksheep.server.files import (
+from shuttleasgi import Application, Request
+from shuttleasgi.common.files.asyncfs import FileContext, FilesHandler
+from shuttleasgi.exceptions import BadRequest, InvalidArgument
+from shuttleasgi.ranges import Range, RangePart
+from shuttleasgi.server.files import (
     DefaultFileOptions,
     FileInfo,
     RangeNotSatisfiable,
@@ -20,14 +20,14 @@ from blacksheep.server.files import (
     get_range_file_getter,
     validate_source_path,
 )
-from blacksheep.server.files.dynamic import get_response_for_file
-from blacksheep.server.files.static import get_response_for_static_content
-from blacksheep.server.headers.cache import CacheControlHeaderValue
-from blacksheep.server.resources import get_resource_file_path
-from blacksheep.server.responses import text
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
-from blacksheep.utils.aio import get_running_loop
+from shuttleasgi.server.files.dynamic import get_response_for_file
+from shuttleasgi.server.files.static import get_response_for_static_content
+from shuttleasgi.server.headers.cache import CacheControlHeaderValue
+from shuttleasgi.server.resources import get_resource_file_path
+from shuttleasgi.server.responses import text
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
+from shuttleasgi.utils.aio import get_running_loop
 
 
 def get_folder_path(folder_name: str) -> str:

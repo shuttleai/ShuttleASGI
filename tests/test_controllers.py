@@ -7,22 +7,22 @@ from guardpost import AuthenticationHandler, User
 from pydantic import Field
 from rodi import inject
 
-from blacksheep.messages import Request, Response
-from blacksheep.server.application import Application
-from blacksheep.server.controllers import (
+from shuttleasgi.messages import Request, Response
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.controllers import (
     APIController,
     Controller,
     RoutesRegistry,
     abstract,
     filters,
 )
-from blacksheep.server.di import register_http_context
-from blacksheep.server.responses import text
-from blacksheep.server.routing import RouteDuplicate
-from blacksheep.server.websocket import WebSocket
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
-from blacksheep.utils import ensure_str
+from shuttleasgi.server.di import register_http_context
+from shuttleasgi.server.responses import text
+from shuttleasgi.server.routing import RouteDuplicate
+from shuttleasgi.server.websocket import WebSocket
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
+from shuttleasgi.utils import ensure_str
 from tests.test_files_serving import get_file_path
 from tests.utils.application import FakeApplication
 
@@ -31,7 +31,7 @@ try:
     from pydantic import validate_call
 except ImportError:
     # v1 - not supported
-    # See https://github.com/Neoteroi/BlackSheep/issues/559
+    # See https://github.com/Neoteroi/ShuttleASGI/issues/559
     validate_call = None
 
 
@@ -1173,7 +1173,7 @@ async def test_controllers_inheritance_di_resolution(app):
 async def test_issue_511(app):
     """
     Test support for more complex logic to define paths, like described in
-    https://github.com/Neoteroi/BlackSheep/issues/511
+    https://github.com/Neoteroi/ShuttleASGI/issues/511
     """
     # Verify that the user can use interchangeably both router.get and
     # router.controllers_routes.get

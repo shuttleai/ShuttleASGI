@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from blacksheep.server.rendering.jinja2 import JinjaRenderer
-from blacksheep.settings.html import html_settings
+from shuttleasgi.server.rendering.jinja2 import JinjaRenderer
+from shuttleasgi.settings.html import html_settings
 from tests.utils.application import FakeApplication
 
 # configures default Jinja settings for tests

@@ -2,9 +2,9 @@ from typing import List
 
 import pytest
 
-from blacksheep.messages import Request
-from blacksheep.server.application import Application
-from blacksheep.server.routing import (
+from shuttleasgi.messages import Request
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.routing import (
     HostFilter,
     InvalidValuePatternName,
     MountRegistry,

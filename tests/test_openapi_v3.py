@@ -30,10 +30,10 @@ from pydantic.types import (
     conint,
 )
 
-from blacksheep.server.application import Application
-from blacksheep.server.bindings import FromForm
-from blacksheep.server.controllers import APIController
-from blacksheep.server.openapi.common import (
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.bindings import FromForm
+from shuttleasgi.server.controllers import APIController
+from shuttleasgi.server.openapi.common import (
     ContentInfo,
     DefaultSerializer,
     EndpointDocs,
@@ -41,15 +41,15 @@ from blacksheep.server.openapi.common import (
     ResponseInfo,
     SecurityInfo,
 )
-from blacksheep.server.openapi.exceptions import DuplicatedContentTypeDocsException
-from blacksheep.server.openapi.v3 import (
+from shuttleasgi.server.openapi.exceptions import DuplicatedContentTypeDocsException
+from shuttleasgi.server.openapi.v3 import (
     DataClassTypeHandler,
     OpenAPIHandler,
     PydanticModelTypeHandler,
     Tag,
     check_union,
 )
-from blacksheep.server.routing import RoutesRegistry
+from shuttleasgi.server.routing import RoutesRegistry
 
 GenericModel = BaseModel
 

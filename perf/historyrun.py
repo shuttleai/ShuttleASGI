@@ -1,6 +1,6 @@
 """
 This script allows to execute the same performance tests on multiple
-versions of BlackSheep. It creates a temporary copy of the perf folder
+versions of ShuttleASGI. It creates a temporary copy of the perf folder
 to ensure that the same tests are executed at various points of the
 Git history.
 
@@ -97,7 +97,7 @@ def make_compile():
             python_implementation,
         )
         return
-    logger.info("Compiling BlackSheep extensions")
+    logger.info("Compiling ShuttleASGI extensions")
     subprocess.check_output(["make", "compile"], universal_newlines=True)
 
 
@@ -168,7 +168,7 @@ class CythonHash:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="BlackSheep Performance Benchmarking")
+    parser = argparse.ArgumentParser(description="ShuttleASGI Performance Benchmarking")
     parser.add_argument(
         "--iterations", type=int, default=100000, help="Number of iterations"
     )

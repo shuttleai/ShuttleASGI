@@ -2,8 +2,8 @@ from typing import Optional
 
 from essentials.meta import deprecated
 
-from blacksheep.messages import Request, Response
-from blacksheep.server import Application
+from shuttleasgi.messages import Request, Response
+from shuttleasgi.server import Application
 
 
 class FakeApplication(Application):

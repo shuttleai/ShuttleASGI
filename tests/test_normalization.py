@@ -8,8 +8,8 @@ from guardpost import Identity, User
 from pytest import raises
 from rodi import Container, Services, inject
 
-from blacksheep import Request
-from blacksheep.server.bindings import (
+from shuttleasgi import Request
+from shuttleasgi.server.bindings import (
     Binder,
     BoundValue,
     ExactBinder,
@@ -26,7 +26,7 @@ from blacksheep.server.bindings import (
     RouteBinder,
     ServiceBinder,
 )
-from blacksheep.server.normalization import (
+from shuttleasgi.server.normalization import (
     AmbiguousMethodSignatureError,
     NormalizationError,
     RouteBinderMismatch,
@@ -38,7 +38,7 @@ from blacksheep.server.normalization import (
     normalize_handler,
     normalize_middleware,
 )
-from blacksheep.server.routing import Route
+from shuttleasgi.server.routing import Route
 
 
 class Pet:

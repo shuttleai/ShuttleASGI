@@ -1,18 +1,18 @@
 import pytest
 
-from blacksheep.exceptions import BadRequest
-from blacksheep.server.application import ApplicationAlreadyStartedCORSError
-from blacksheep.server.cors import (
+from shuttleasgi.exceptions import BadRequest
+from shuttleasgi.server.application import ApplicationAlreadyStartedCORSError
+from shuttleasgi.server.cors import (
     CORSConfigurationError,
     CORSPolicy,
     CORSPolicyNotConfiguredError,
     CORSStrategy,
     NotRequestHandlerError,
 )
-from blacksheep.server.responses import text
-from blacksheep.server.routing import Router
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.responses import text
+from shuttleasgi.server.routing import Router
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 
 
 def test_app_raises_type_error_for_cors_property(app):

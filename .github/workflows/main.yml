@@ -24,7 +24,7 @@ on:
       - CHANGELOG.md
 
 env:
-  PROJECT_NAME: blacksheep
+  PROJECT_NAME: shuttleasgi
 
 jobs:
   windows-validation:
@@ -53,14 +53,14 @@ jobs:
 
       - name: Compile Cython extensions
         run: |
-          cython blacksheep/url.pyx
-          cython blacksheep/exceptions.pyx
-          cython blacksheep/headers.pyx
-          cython blacksheep/cookies.pyx
-          cython blacksheep/contents.pyx
-          cython blacksheep/messages.pyx
-          cython blacksheep/scribe.pyx
-          cython blacksheep/baseapp.pyx
+          cython shuttleasgi/url.pyx
+          cython shuttleasgi/exceptions.pyx
+          cython shuttleasgi/headers.pyx
+          cython shuttleasgi/cookies.pyx
+          cython shuttleasgi/contents.pyx
+          cython shuttleasgi/messages.pyx
+          cython shuttleasgi/scribe.pyx
+          cython shuttleasgi/baseapp.pyx
           python setup.py build_ext --inplace
 
       - name: Run tests
@@ -69,7 +69,7 @@ jobs:
 
       - name: Run linters
         run: |
-          flake8 blacksheep
+          flake8 shuttleasgi
           flake8 tests
 
   build:
@@ -133,13 +133,13 @@ jobs:
         run: |
           echo "Running linters - if build fails here, please be patient! Feel free to ask for assistance."
 
-          flake8 blacksheep
+          flake8 shuttleasgi
           flake8 tests
           flake8 itests
-          isort --check-only blacksheep 2>&1
+          isort --check-only shuttleasgi 2>&1
           isort --check-only tests 2>&1
           isort --check-only itests 2>&1
-          black --check blacksheep 2>&1
+          black --check shuttleasgi 2>&1
           black --check tests 2>&1
           black --check itests 2>&1
 
@@ -197,14 +197,14 @@ jobs:
         run: |
           make clean
 
-          cython blacksheep/url.pyx
-          cython blacksheep/exceptions.pyx
-          cython blacksheep/headers.pyx
-          cython blacksheep/cookies.pyx
-          cython blacksheep/contents.pyx
-          cython blacksheep/messages.pyx
-          cython blacksheep/scribe.pyx
-          cython blacksheep/baseapp.pyx
+          cython shuttleasgi/url.pyx
+          cython shuttleasgi/exceptions.pyx
+          cython shuttleasgi/headers.pyx
+          cython shuttleasgi/cookies.pyx
+          cython shuttleasgi/contents.pyx
+          cython shuttleasgi/messages.pyx
+          cython shuttleasgi/scribe.pyx
+          cython shuttleasgi/baseapp.pyx
 
       - name: Build wheels (linux)
         if: startsWith(matrix.os, 'ubuntu')

@@ -2,16 +2,16 @@ import re
 
 import pytest
 
-from blacksheep.contents import write_www_form_urlencoded
-from blacksheep.messages import Response
-from blacksheep.server.controllers import Controller
-from blacksheep.server.csrf import ignore_anti_forgery, use_anti_forgery
-from blacksheep.server.rendering.jinja2 import AntiForgeryBaseExtension, JinjaRenderer
-from blacksheep.server.responses import no_content, view, view_async
-from blacksheep.server.routing import RoutesRegistry
-from blacksheep.settings.html import html_settings
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.contents import write_www_form_urlencoded
+from shuttleasgi.messages import Response
+from shuttleasgi.server.controllers import Controller
+from shuttleasgi.server.csrf import ignore_anti_forgery, use_anti_forgery
+from shuttleasgi.server.rendering.jinja2 import AntiForgeryBaseExtension, JinjaRenderer
+from shuttleasgi.server.responses import no_content, view, view_async
+from shuttleasgi.server.routing import RoutesRegistry
+from shuttleasgi.settings.html import html_settings
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.utils.application import FakeApplication
 
 
@@ -144,7 +144,7 @@ async def test_anti_forgery_missing_request_context(home_model):
     text = await app.response.text()
     assert text is not None
     assert (
-        "blacksheep.server.csrf.MissingRequestContextError: The request context is "
+        "shuttleasgi.server.csrf.MissingRequestContextError: The request context is "
         "missing from the render call. Pass the request object to the context of the "
         "template."
     ) in text

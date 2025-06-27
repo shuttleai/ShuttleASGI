@@ -7,13 +7,13 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from blacksheep import Content, Cookie, Response, scribe
-from blacksheep.exceptions import FailedRequestError
-from blacksheep.server.controllers import (
+from shuttleasgi import Content, Cookie, Response, scribe
+from shuttleasgi.exceptions import FailedRequestError
+from shuttleasgi.server.controllers import (
     CannotDetermineDefaultViewNameError,
     Controller,
 )
-from blacksheep.server.responses import (
+from shuttleasgi.server.responses import (
     ContentDispositionType,
     accepted,
     bad_request,
@@ -36,9 +36,9 @@ from blacksheep.server.responses import (
     text,
     unauthorized,
 )
-from blacksheep.server.routing import RoutesRegistry
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.routing import RoutesRegistry
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.test_files_serving import get_file_path
 
 STATUS_METHODS_OPTIONAL_BODY = [
@@ -144,33 +144,33 @@ def test_response_supports_dynamic_attributes():
     "response,cookies,expected_result",
     [
         (
-            Response(400, [(b"Server", b"BlackSheep")]).with_content(
+            Response(400, [(b"Server", b"ShuttleASGI")]).with_content(
                 Content(b"text/plain", b"Hello, World")
             ),
             [],
             b"HTTP/1.1 400 Bad Request\r\n"
-            b"Server: BlackSheep\r\n"
+            b"Server: ShuttleASGI\r\n"
             b"content-type: text/plain\r\n"
             b"content-length: 12\r\n\r\nHello, World",
         ),
         (
-            Response(400, [(b"Server", b"BlackSheep")]).with_content(
+            Response(400, [(b"Server", b"ShuttleASGI")]).with_content(
                 Content(b"text/plain", b"Hello, World")
             ),
             [Cookie("session", "123")],
             b"HTTP/1.1 400 Bad Request\r\n"
-            b"Server: BlackSheep\r\n"
+            b"Server: ShuttleASGI\r\n"
             b"set-cookie: session=123\r\n"
             b"content-type: text/plain\r\n"
             b"content-length: 12\r\n\r\nHello, World",
         ),
         (
-            Response(400, [(b"Server", b"BlackSheep")]).with_content(
+            Response(400, [(b"Server", b"ShuttleASGI")]).with_content(
                 Content(b"text/plain", b"Hello, World")
             ),
             [Cookie("session", "123"), Cookie("aaa", "bbb", domain="bezkitu.org")],
             b"HTTP/1.1 400 Bad Request\r\n"
-            b"Server: BlackSheep\r\n"
+            b"Server: ShuttleASGI\r\n"
             b"set-cookie: session=123\r\n"
             b"set-cookie: aaa=bbb; Domain=bezkitu.org\r\n"
             b"content-type: text/plain\r\n"

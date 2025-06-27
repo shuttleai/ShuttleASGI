@@ -16,11 +16,11 @@ from openapidocs.v3 import Response as ResponseDoc
 from openapidocs.v3 import Schema
 from pydantic import BaseModel
 
-from blacksheep import Response, TextContent, WebSocket
-from blacksheep.server import Application
-from blacksheep.server.authentication import AuthenticationHandler
-from blacksheep.server.authorization import Policy, Requirement, auth
-from blacksheep.server.bindings import (
+from shuttleasgi import Response, TextContent, WebSocket
+from shuttleasgi.server import Application
+from shuttleasgi.server.authentication import AuthenticationHandler
+from shuttleasgi.server.authorization import Policy, Requirement, auth
+from shuttleasgi.server.bindings import (
     FromCookie,
     FromForm,
     FromHeader,
@@ -28,9 +28,9 @@ from blacksheep.server.bindings import (
     FromQuery,
     FromServices,
 )
-from blacksheep.server.compression import use_gzip_compression
-from blacksheep.server.controllers import APIController
-from blacksheep.server.openapi.common import (
+from shuttleasgi.server.compression import use_gzip_compression
+from shuttleasgi.server.controllers import APIController
+from shuttleasgi.server.openapi.common import (
     ContentInfo,
     EndpointDocs,
     HeaderInfo,
@@ -40,10 +40,10 @@ from blacksheep.server.openapi.common import (
     ResponseExample,
     ResponseInfo,
 )
-from blacksheep.server.openapi.ui import ReDocUIProvider
-from blacksheep.server.openapi.v3 import OpenAPIHandler
-from blacksheep.server.responses import text
-from blacksheep.server.routing import RoutesRegistry
+from shuttleasgi.server.openapi.ui import ReDocUIProvider
+from shuttleasgi.server.openapi.v3 import OpenAPIHandler
+from shuttleasgi.server.responses import text
+from shuttleasgi.server.routing import RoutesRegistry
 from itests.utils import CrashTest
 
 app_2 = Application()

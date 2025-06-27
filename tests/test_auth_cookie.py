@@ -2,10 +2,10 @@ from typing import Any
 
 from guardpost import Identity
 
-from blacksheep.messages import Request, Response
-from blacksheep.server.authentication.cookie import CookieAuthentication
-from blacksheep.server.dataprotection import generate_secret
-from blacksheep.utils.time import utcnow
+from shuttleasgi.messages import Request, Response
+from shuttleasgi.server.authentication.cookie import CookieAuthentication
+from shuttleasgi.server.dataprotection import generate_secret
+from shuttleasgi.utils.time import utcnow
 
 
 def get_auth_cookie(handler: CookieAuthentication, data: Any) -> str:

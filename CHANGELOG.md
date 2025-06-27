@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add built-in features to enable `OpenTelemetry` logging for all web requests
   and exceptions, based on the examples provided in the
-  [BlackSheep-Examples](https://github.com/Neoteroi/BlackSheep-Examples/tree/main/otel)
+  [ShuttleASGI-Examples](https://github.com/Neoteroi/ShuttleASGI-Examples/tree/main/otel)
   repository.
 - Fix #577. Server-Sent Events should be written with `\n` instead of `\r\n`.
 
@@ -38,20 +38,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for [`PyPy`](https://pypy.org/), adding a pure-Python fallback
   for all `Cython` modules.
-- Fix [#539](https://github.com/Neoteroi/BlackSheep/issues/539). Make
+- Fix [#539](https://github.com/Neoteroi/ShuttleASGI/issues/539). Make
   `httptools` an optional dependency, to support [`PyPy`](https://pypy.org/).
 - Modify `url.pyx` to remove the dependency on `httptools`.
-- Modify the HTTP Client implementation in BlackSheep to
+- Modify the HTTP Client implementation in ShuttleASGI to
   not be tightly coupled with `httptools` for the response parsing logic, and
   include built-in support for `h11`.
 - **MINOR BREAKING CHANGE**. Since `httptools` is not installed by default, the
-  BlackSheep **client** requires either `httptools` or `h11` to be installed, as it
+  ShuttleASGI **client** requires either `httptools` or `h11` to be installed, as it
   does not implement its own parsing logic for HTTP responses. This affects
   only the HTTP client.
 - Upgrade dependencies (see `pyproject.toml` for more information).
 - Include a pure-Python wheel in the distribution package, and run tests
   with **PyPy 3.11**.
-- Fix [#559](https://github.com/Neoteroi/BlackSheep/issues/559), which is a
+- Fix [#559](https://github.com/Neoteroi/ShuttleASGI/issues/559), which is a
   performance regression introduced in `2.3.0`. Remove support for Pydantic v1
   `validate_arguments` decorator (added in 2.3.0), which caused the regression.
   Pydantic's v2 `validate_call` supports async and does not require specific code.
@@ -64,8 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > public code API of certain classes, hence the bump in version from `2.2.0` to
 > `2.3.0`. The breaking changes aim to improve the user experience (UX) when
 > using `Controllers` and registering routes. In particular, they address
-> issues [#511](https://github.com/Neoteroi/BlackSheep/issues/511) and
-> [#540](https://github.com/Neoteroi/BlackSheep/issues/540).The scope of the
+> issues [#511](https://github.com/Neoteroi/ShuttleASGI/issues/511) and
+> [#540](https://github.com/Neoteroi/ShuttleASGI/issues/540).The scope of the
 > breaking changes is relatively minor, as they affect built-in features that
 > are *likely* not commonly modified: removes the `prepare_controllers` and the
 > `get_controller_handler_pattern` from the `Application` class, transferring
@@ -77,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > them immediately, postponing duplicate checks, and introduces an
 > `apply_routes` method to make routes effective upon application startup.
 > This change is necessary to support using the same functions for both
-> _functions_ and _methods_, addressing issue [#540](https://github.com/Neoteroi/BlackSheep/issues/540),
+> _functions_ and _methods_, addressing issue [#540](https://github.com/Neoteroi/ShuttleASGI/issues/540),
 > improving UX, and eliminating potential confusion caused by having two
 > sets of decorators (`get, post, put, etc.`) that behave differently. While
 > the two sets of decorators are still maintained to minimize the impact of
@@ -88,13 +88,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Now Controllers support routes inheritance! This is an important feature that
 > was missing so far in the web framework.
 
-- Fix [#511](https://github.com/Neoteroi/BlackSheep/issues/511). Add support
+- Fix [#511](https://github.com/Neoteroi/ShuttleASGI/issues/511). Add support
   for inheriting endpoints from parent controller classes, when subclassing
   controllers. Example:
 
 ```python
-from blacksheep import Application
-from blacksheep.server.controllers import Controller, abstract, get
+from shuttleasgi import Application
+from shuttleasgi.server.controllers import Controller, abstract, get
 
 app = Application()
 
@@ -130,17 +130,17 @@ class ControllerTwo(BaseController):
 - **BREAKING CHANGE**. Refactor the `Router` class to handle consistently
   request handlers defined using _functions_ and controllers' class _methods_
   (refer to the note above for more information).
-- Fix [#498](https://github.com/Neoteroi/BlackSheep/issues/498): Buffer reuse
+- Fix [#498](https://github.com/Neoteroi/ShuttleASGI/issues/498): Buffer reuse
   and race condition in `client.IncomingContent.stream()`, by @ohait.
-- Fix [#365](https://github.com/Neoteroi/BlackSheep/issues/365), adding support
+- Fix [#365](https://github.com/Neoteroi/ShuttleASGI/issues/365), adding support
   for Pydantic's `@validate_call` and `@validate_arguments` and other wrappers
   applied to functions before they are configured as request handlers.
   Contribution by @aldem, who reported the issue and provided the solution.
 - To better support `@validate_call`, configure automatically a default
   exception handler for `pydantic.ValidationError` when Pydantic is installed.
-- Fix [#550](https://github.com/Neoteroi/BlackSheep/issues/550). Ensure that
+- Fix [#550](https://github.com/Neoteroi/ShuttleASGI/issues/550). Ensure that
   all generated `$ref` values contain only [allowed characters](https://swagger.io/docs/specification/v3_0/using-ref/).
-- Fix [#484](https://github.com/Neoteroi/BlackSheep/issues/484). Improve the
+- Fix [#484](https://github.com/Neoteroi/ShuttleASGI/issues/484). Improve the
   implementation of Server-Sent Events (SSE) to support sending data in any
   shape, and not only as JSON. Add a `TextServerSentEvent` class to send plain
   text to the client (this still escapes new lines!).
@@ -148,20 +148,20 @@ class ControllerTwo(BaseController):
   `RuntimeError` if the env variable `APP_SIGNAL_HANDLER` is not set to a
   truthy value.
 - Improve the error message of the `RouteDuplicate` class.
-- Fix [#38](https://github.com/Neoteroi/BlackSheep-Docs/issues/38) for notations that
+- Fix [#38](https://github.com/Neoteroi/ShuttleASGI-Docs/issues/38) for notations that
   are available since Python 3.9 (e.g. `list[str]`, `set[str]`, `tuple[str]`).
-- Fix [a regression](https://github.com/Neoteroi/BlackSheep/issues/538#issuecomment-2867564293)
+- Fix [a regression](https://github.com/Neoteroi/ShuttleASGI/issues/538#issuecomment-2867564293)
   introduced in `2.2.0` that would prevent custom `HTTPException`handlers from
   being used when the user configured a catch-all `Exception` handler
   (**this practice is not recommended; let the framework handle unhandled exceptions
   using `InternalServerError` exception handler**).
-- Add a `Conflict` `HTTPException` to `blacksheep.exceptions` for `409`
+- Add a `Conflict` `HTTPException` to `shuttleasgi.exceptions` for `409`
   [response code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/409).
 - Improve the test code to make it less verbose.
 
 ## [2.2.0] - 2025-04-28 🎉
 
-- Fix [#533](https://github.com/Neoteroi/BlackSheep/issues/533). **A feature
+- Fix [#533](https://github.com/Neoteroi/ShuttleASGI/issues/533). **A feature
   that was requested several times in the past!** Add support for delegating
   the generation of OpenAPI schemas for types to external libraries and
   completely relies on schemas generated by **Pydantic** when working with
@@ -177,22 +177,22 @@ class ControllerTwo(BaseController):
   `serializer` parameter to the `OpenAPIHandler`'s constructor.
 - Generates OpenAPI Specification with version `3.1.0` instead of `3.0.3`.
 - Update `essentials-openapi` dependency to version `>=1.2.0`.
-- Fix [#541](https://github.com/Neoteroi/BlackSheep/issues/541). Correct the
+- Fix [#541](https://github.com/Neoteroi/ShuttleASGI/issues/541). Correct the
   type hint for the Jinja loader to use the abstract interface `BaseLoader`.
-- Fix [#517](https://github.com/Neoteroi/BlackSheep/issues/517). Add support
+- Fix [#517](https://github.com/Neoteroi/ShuttleASGI/issues/517). Add support
   for any HTTP method when writing HTTP requests, not only for the most common
   methods.
-- Fix [#529](https://github.com/Neoteroi/BlackSheep/issues/529). Add missing
+- Fix [#529](https://github.com/Neoteroi/ShuttleASGI/issues/529). Add missing
   Jinja2 dependency in the `full` package.
 - Fix type annotation in `messages.pyi`, by @bymoye.
 - Add support for mapping types in OpenAPI Documentation, by @tyzhnenko.
-- Improve `blacksheep/server/normalization.py` to bind any subclass of
+- Improve `shuttleasgi/server/normalization.py` to bind any subclass of
   `Identity` using the `request.user` rather than just `User` and `Identity`
   exactly, by @bymoye.
 - Add new UI provider for OpenAPI Documentation, for [Scalar
   UI](https://github.com/scalar/scalar), by @arthurbrenno and @bymoye.
 - Correct the `ReDocUIProvider` to support a custom `favicon`.
-- Fix [#538](https://github.com/Neoteroi/BlackSheep/issues/538). The
+- Fix [#538](https://github.com/Neoteroi/ShuttleASGI/issues/538). The
   `Application` object can now use both `Type` keys and `int` keys when
   applying the default _Not Found_ exception handler and the _Internal Server
   Error_ exception handler.
@@ -236,7 +236,7 @@ class ControllerTwo(BaseController):
 - Fix a bug in the `ClientSession`, happening when a server closes the
   connection, and the response content is not set as completed.
 - Add a default `User-Agent` to web requests sent using the `ClientSession`,
-  the user agent is: `python-blacksheep/{__version__}`.
+  the user agent is: `python-shuttleasgi/{__version__}`.
 - Add an async method `raise_for_status` to the `Response` object, which raises
   an exception of type `FailedRequestError` if the response status is not in
   the range **200-299**. The method is asynchronous because in case of failure
@@ -250,9 +250,9 @@ class ControllerTwo(BaseController):
   OpenAPI UI feature, to serve documentation to the correct path.
   This feature is useful when exposing applications behind proxies using
   path based routing, to maintain the same path between the proxy server and
-  the BlackSheep application. This is an alternative approach to the one used
-  by the `root_path` offered by `ASGI` (still supported in `BlackSheep`).
-  ASGI `root_path` and route prefix in BlackSheep are alternative ways to
+  the ShuttleASGI application. This is an alternative approach to the one used
+  by the `root_path` offered by `ASGI` (still supported in `ShuttleASGI`).
+  ASGI `root_path` and route prefix in ShuttleASGI are alternative ways to
   address the same issue, and should not be used together.
 - Improve the OpenAPI UI to support router prefixes, and fetching the
   specification file using relative links.
@@ -264,10 +264,10 @@ class ControllerTwo(BaseController):
   a "/" towards the same path with a trailing slash. This is useful for
   endpoints that serve HTML documents, to ensure that relative URLs in the
   response body are correctly resolved
-  (`from blacksheep.server.redirects import get_trailing_slash_middleware`).
+  (`from shuttleasgi.server.redirects import get_trailing_slash_middleware`).
 - Add a built-in strategy to handle startup errors and display an error page
   when an application fails during initialization, in
-  `blacksheep.server.diagnostics.get_diagnostic_app`. Error details are not
+  `shuttleasgi.server.diagnostics.get_diagnostic_app`. Error details are not
   displayed by default, but can be displayed setting the environment variable
   `APP_SHOW_ERROR_DETAILS` to a value such as `1` or `true`.
 - Use `asyncio_mode=auto` for `pytest` (remove `@pytest.mark.asyncio` decorators).
@@ -286,7 +286,7 @@ class ControllerTwo(BaseController):
 ## [2.0.8] - 2025-01-25
 
 - Add Python 3.13 to the build matrix and several maintenance fixes, by @waketzheng.
-- Fix type error in `blacksheep/server/compression.py` `is_handled_encoding`;
+- Fix type error in `shuttleasgi/server/compression.py` `is_handled_encoding`;
   contributed by @bymoye and @ChenyangGao.
 - Fix issue where the host is not the proxy address when there is a proxy by
   @ChenyangGao.
@@ -301,7 +301,7 @@ class ControllerTwo(BaseController):
 
 ## [2.0.7] - 2024-02-17 :tulip:
 
-- Fixes bug [#38](https://github.com/Neoteroi/BlackSheep-Docs/issues/38),
+- Fixes bug [#38](https://github.com/Neoteroi/ShuttleASGI-Docs/issues/38),
   to support properly `list[T]` and `tuple[T]` when defining query string
   parameters. Reported by @ranggakd.
 - Passes annotated origin type to build OpenAPI docs (#475), by @tyzhnenko.
@@ -316,19 +316,19 @@ class ControllerTwo(BaseController):
 - Adds built-in support for [Server-Sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
 - Adds a function to detect when the server process is terminating because it
   received a `SIGINT` or a `SIGTERM` command
-  (`from blacksheep.server.process import is_stopping`).
+  (`from shuttleasgi.server.process import is_stopping`).
 - Adds support for request handler normalization for methods defined as
   asynchronous generators. This feature is enabled by default only for
   ServerSentEvents, but can be configured for user defined types.
 - Raises exception when the default router is used to register routes, but not
-  associated to an application object. Fixes [#470](https://github.com/Neoteroi/BlackSheep/issues/470).
+  associated to an application object. Fixes [#470](https://github.com/Neoteroi/ShuttleASGI/issues/470).
 
-Refer to the [BlackSheep documentation](https://www.neoteroi.dev/blacksheep/server-sent-events/)
-and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples/tree/main/server-sent-events) for more information on server-sent events support.
+Refer to the [ShuttleASGI documentation](https://www.neoteroi.dev/shuttleasgi/server-sent-events/)
+and to the [examples repository](https://github.com/Neoteroi/ShuttleASGI-Examples/tree/main/server-sent-events) for more information on server-sent events support.
 
 ## [2.0.5] - 2024-01-12 :pie:
 
-- Fixes [#466](https://github.com/Neoteroi/BlackSheep/issues/466), regression
+- Fixes [#466](https://github.com/Neoteroi/ShuttleASGI/issues/466), regression
   introduced in 2.0.4 when using sub-routers, reported by @ruancan.
 
 ## [2.0.4] - 2023-12-31 :fireworks:
@@ -336,7 +336,7 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
 - Adds a `is_disconnected()` method to the `Request` class, similar to the one
   available in `Starlette`, which answers if the ASGI server published an
   `http.disconnected` message for a request.
-  Feature requested by @netanel-haber in [#452](https://github.com/Neoteroi/BlackSheep/issues/452).
+  Feature requested by @netanel-haber in [#452](https://github.com/Neoteroi/ShuttleASGI/issues/452).
 - Makes the `receive` callable of the `ASGI` request accessible to Python code,
   through the existing `ASGIContent` class. The `receive` property was already
   included in `contents.pyi` file and it was wrong to keep `receive` private
@@ -345,7 +345,7 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
 - Upgrades the versions of Hypercorn and uvicorn for integration tests.
 - Removes the unused "active" property defined in the `Response` class.
 - Fixes #455, reported by @Klavionik. This error caused the WebSocket handler
-  to erroneously return an instance of BlackSheep response to the underlying
+  to erroneously return an instance of ShuttleASGI response to the underlying
   ASGI server, causing an error to be logged in the console.
 - Updates type annotations in the `Application` class code to be more explicit
   about the fact that certain methods must return None (return in __call__ is
@@ -358,7 +358,7 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
   annotated as Request or WebSocket.
 - Fixes #421 reported by @mohd-akram, causing handled exceptions to be logged
   like unhandled, when defining exception handlers using subclasses.
-- Removes wrong type annotations in two functions in `blacksheep.utils`.
+- Removes wrong type annotations in two functions in `shuttleasgi.utils`.
 
 ## [2.0.3] - 2023-12-18 :gift:
 
@@ -417,16 +417,16 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
 ## [2.0a8] - 2023-07-02
 
 - Add support for `StreamedContent` with specific content length; fixing
-  [#374](https://github.com/Neoteroi/BlackSheep/issues/374) both on the client
+  [#374](https://github.com/Neoteroi/ShuttleASGI/issues/374) both on the client
   and the server side.
-- Fix [#373](https://github.com/Neoteroi/BlackSheep/issues/373), about missing
+- Fix [#373](https://github.com/Neoteroi/ShuttleASGI/issues/373), about missing
   closing ASGI message when an async generator does not yield a closing empty
   bytes sequence (`b""`).
 - Make version dynamic in `pyproject.toml`, simplifying how the version can be
-  queried at runtime (see [#362](https://github.com/Neoteroi/BlackSheep/issues/362)).
-- Fix [#372](https://github.com/Neoteroi/BlackSheep/issues/372). Use the ASGI
+  queried at runtime (see [#362](https://github.com/Neoteroi/ShuttleASGI/issues/362)).
+- Fix [#372](https://github.com/Neoteroi/ShuttleASGI/issues/372). Use the ASGI
   scope `root_path` when possible, as `base_path`.
-- Fix [#371](https://github.com/Neoteroi/BlackSheep/issues/371). Returns status
+- Fix [#371](https://github.com/Neoteroi/ShuttleASGI/issues/371). Returns status
   403 Forbidden when the user is authenticated but not authorized to perform an
   action.
 - Fixes `TypeError` when writing a request without host header.
@@ -434,12 +434,12 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
   Pydantic v1 (generating OpenAPI Documentation).
 - Add support for `Union` types in sub-properties of request handlers input and
   output types, for generating OpenAPI Documentation, both using simple classes
-  and Pydantic [#389](https://github.com/Neoteroi/BlackSheep/issues/389)
+  and Pydantic [#389](https://github.com/Neoteroi/ShuttleASGI/issues/389)
 
 ## [2.0a7] - 2023-05-31 :corn:
 
 - Fixes bug in CORS handling when [multiple origins are
-  allowed](https://github.com/Neoteroi/BlackSheep/issues/364).
+  allowed](https://github.com/Neoteroi/ShuttleASGI/issues/364).
 - Adds a `Vary: Origin` response header for CORS requests when the value of
   `Access-Control-Allow-Origin` header is a specific URL.
 - Adds algorithms parameter to JWTBearerAuthentication constructor, by @tyzhnenko.
@@ -460,7 +460,7 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
 - Adds a strategy to control features depending on application environment:
   `is_development`, `is_production` depending on `APP_ENV` environment
   variable. For more information, see [_Defining application
-  environment_](https://www.neoteroi.dev/blacksheep/settings/#defining-application-environment).
+  environment_](https://www.neoteroi.dev/shuttleasgi/settings/#defining-application-environment).
 - Makes the client `ConnectionPools` a context manager, its `__exit__` method
   closes all its `TCP-IP` connections.
 - Improves exception handling so it is possible to specify how specific types
@@ -495,7 +495,7 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
   requests resulting in responses with status `200`.
 - Adds features to control `cache-control` header for the default document
   (e.g. `index.html`) when serving static files;
-  see [issue 297](https://github.com/Neoteroi/BlackSheep/issues/297).
+  see [issue 297](https://github.com/Neoteroi/ShuttleASGI/issues/297).
 - Fixes bug in `sessions` that prevented updating the session data when using
   the `set` and `__delitem__` methods;
   [scottrutherford](https://github.com/scottrutherford)'s contribution.
@@ -503,8 +503,8 @@ and to the [examples repository](https://github.com/Neoteroi/BlackSheep-Examples
 `@app.lifespan` example:
 
 ```python
-from blacksheep import Application
-from blacksheep.client.session import ClientSession
+from shuttleasgi import Application
+from shuttleasgi.client.session import ClientSession
 
 app = Application()
 
@@ -549,7 +549,7 @@ if __name__ == "__main__":
 - Corrects bug of the `Request` class that prevented the `host` property from
   working properly after updating `url` (causing `follow_redirects` to not work
   properly in `ClientSession`.
-- Upgrades the `essentials-openapi` dependency, fixing [#316](https://github.com/Neoteroi/BlackSheep/issues/316).
+- Upgrades the `essentials-openapi` dependency, fixing [#316](https://github.com/Neoteroi/ShuttleASGI/issues/316).
 - Corrects the `Request` class to not generate more than one `Cookie` header
   when multiple cookies are set, to [respect the specification](https://www.rfc-editor.org/rfc/rfc6265#section-5.4).
 
@@ -562,9 +562,9 @@ if __name__ == "__main__":
   `refresh_token`) using the HTML5 Storage API (supportin `localStorage` and
   `sessionStorage`). Refresh tokens, if present, are automatically protected to
   prevent leaking. See [the OIDC
-  examples](https://github.com/Neoteroi/BlackSheep-Examples/tree/main/oidc) for
+  examples](https://github.com/Neoteroi/ShuttleASGI-Examples/tree/main/oidc) for
   more information.
-- Renames `blacksheep.server.authentication.oidc.BaseTokensStore` to `TokensStore`.
+- Renames `shuttleasgi.server.authentication.oidc.BaseTokensStore` to `TokensStore`.
 - Removes the `tokens_store` parameter from the `use_openid_connect` method;
   it is still available as optional parameter of the two built-in classes used
   to handle tokens.
@@ -615,7 +615,7 @@ if __name__ == "__main__":
   in schemas generated for OpenAPI Documentation V3
 - Corrects the capitalization of "ApiController" to be "APIController", still
   keeping the first name for backward compatibility
-- Verifies in tests that `Annotated` is supported by BlackSheep
+- Verifies in tests that `Annotated` is supported by ShuttleASGI
 
 ## [1.2.6] - 2022-04-28 :candle:
 - Fixes #248, #253
@@ -626,24 +626,24 @@ if __name__ == "__main__":
 
 ## [1.2.5] - 2022-03-12 :dove:
 - Improves WebSocket to handle built-in exception types: Unauthorized, HTTPException
-- Adds built-in support for [Anti Forgery validation](https://www.neoteroi.dev/blacksheep/anti-request-forgery) to protect against Cross-Site Request Forgery (XSRF/CSRF) attacks
+- Adds built-in support for [Anti Forgery validation](https://www.neoteroi.dev/shuttleasgi/anti-request-forgery) to protect against Cross-Site Request Forgery (XSRF/CSRF) attacks
 - Modifies the Request and Response classes to support weak references
 - Adds the possibility to use `**kwargs` in view functions, returning HTML built
   using Jinja2
-- Adds support for automatic handling of child application events when BlackSheep
-  applications are mounted into a parent BlackSheep application
-- Adds support for OpenAPI Documentation generated for children BlackSheep apps,
+- Adds support for automatic handling of child application events when ShuttleASGI
+  applications are mounted into a parent ShuttleASGI application
+- Adds support for OpenAPI Documentation generated for children ShuttleASGI apps,
   when using mounts
 - Corrects bugs that prevented mounted routes to work recursively in descendants
 - Updates dependencies
 
 ## [1.2.4] - 2022-02-13 :cat:
 - Modifies the `WebSocket` class to support built-in binders
-- Re-exports the most common types from the `blacksheep` module to reduce
+- Re-exports the most common types from the `shuttleasgi` module to reduce
   the verbosity of import statements
 
 ## [1.2.3] - 2022-02-06 :cat2:
-- Adds support for [WebSocket](https://www.neoteroi.dev/blacksheep/websocket/)
+- Adds support for [WebSocket](https://www.neoteroi.dev/shuttleasgi/websocket/)
 
 ## [1.2.2] - 2021-12-03 :gift:
 - Fixes wrong mime type in OpenAPI Documentation for the `form` binder (#212)
@@ -651,7 +651,7 @@ if __name__ == "__main__":
 - Updates default environment variable prefix for app secrets to be `APP_SECRET`
   instead of `APPSECRET` (also accepts the value without underscore for backward
   compatibility)
-- Adds missing server import to `blacksheep/__init__.pyi`
+- Adds missing server import to `shuttleasgi/__init__.pyi`
 
 ## [1.2.1] - 2021-11-15 :shield:
 - Adds built-in support for `JWT` bearer authentication, and validation
@@ -687,7 +687,7 @@ if __name__ == "__main__":
 - Modifies `setup.py` dependencies to be less strict (`~=` instead of `==`)
 
 ## [1.0.9] - 2021-07-14 🇮🇹
-- Adds support for application mounts (see [discussion #160](https://github.com/Neoteroi/BlackSheep/discussions/160))
+- Adds support for application mounts (see [discussion #160](https://github.com/Neoteroi/ShuttleASGI/discussions/160))
 - Applies sorting of imports using `isort`, enforces linters in the CI pipeline
   with both `black` and `isort`
 - Adds support for application events defined using decorators: `@app.on_start`,
@@ -700,7 +700,7 @@ if __name__ == "__main__":
 
 ## [1.0.8] - 2021-06-19 :droplet:
 - Corrects a bug forcing `camelCase` on examples objects handled as dataclasses
-  (issue [#173](https://github.com/Neoteroi/BlackSheep/issues/173)), updating
+  (issue [#173](https://github.com/Neoteroi/ShuttleASGI/issues/173)), updating
   the dependency on `essentials-openapi` to [v1.0.4](https://github.com/Neoteroi/essentials-openapi/blob/v0.1.4/CHANGELOG.md#014---2021-06-19-droplet)
 - Corrects a bug causing duplicate components definitions in generated OpenAPI
   documentation, when handling `Optional[T]`
@@ -713,18 +713,18 @@ if __name__ == "__main__":
 
 ## [1.0.7] - 2021-06-11 🍉
 - Adds a `TestClient` class that simplifies testing of applications
-- Fixes bug [#156](https://github.com/Neoteroi/BlackSheep/issues/156),
+- Fixes bug [#156](https://github.com/Neoteroi/ShuttleASGI/issues/156),
   preventing route parameters to work when the user doesn't follow Python
   naming conventions
 - Adds support for automatic generation of OpenAPI Documentation for `Generic`
   types
 - Improves the generation of OpenAPI Documentation for `pydantic` types and to
-  support more object types (fixes [#167](https://github.com/Neoteroi/BlackSheep/issues/167))
+  support more object types (fixes [#167](https://github.com/Neoteroi/ShuttleASGI/issues/167))
 - Ensures that request body is parsed as JSON only if the content type contains
   the "json" substring
 
 ## [1.0.6] - 2021-05-30 :birthday:
-- Fixes bug [#153](https://github.com/Neoteroi/BlackSheep/issues/153),
+- Fixes bug [#153](https://github.com/Neoteroi/ShuttleASGI/issues/153),
   reintroducing compatibility with [Hypercorn](https://pgjones.gitlab.io/hypercorn/index.html)
 - Fixes a bug that made links generated for the discovery of static files not
   working (double leading "/" in `href`)
@@ -744,7 +744,7 @@ if __name__ == "__main__":
 - Adds support for documenting parameters' descriptions, with support for
   various `docstring` formats: `Epytext`, `reStructuredText`, `Google`,
   `Numpydoc` (fixes #124, see discussion
-  [#123](https://github.com/Neoteroi/BlackSheep/discussions/123))
+  [#123](https://github.com/Neoteroi/ShuttleASGI/discussions/123))
 - Corrects stubs for cookies: `Response.unset_cookie`, and `Cookie` same site
   annotation
 - Updates `essentials-openapi` dependency to its next minor version, thus
@@ -756,7 +756,7 @@ if __name__ == "__main__":
 - Adds support for Python 3.10 and PEP 563 (however, it works with `httptools`
   built from its current default branch, because the version of `httptools`
   currently in `PyPi` does not support Python 3.10)
-- Fixes bug [#109](https://github.com/Neoteroi/BlackSheep/issues/109) (client
+- Fixes bug [#109](https://github.com/Neoteroi/ShuttleASGI/issues/109) (client
   not handling properly various formats for Cookie time representations)
 - Improves a detail in the client session URL handling (doesn't cause exception
   for an empty string URL, defaults to "/")
@@ -773,19 +773,19 @@ if __name__ == "__main__":
   aliases, for backward compatibility
 - Corrects a detail in the `JSONContent` class default dumps function
 - Adds support for logging the route pattern for each web request (for logging
-  purposes, see issue [#99](https://github.com/Neoteroi/BlackSheep/issues/99))
+  purposes, see issue [#99](https://github.com/Neoteroi/ShuttleASGI/issues/99))
 - Adds support for OpenAPI Docs anonymous access, when a default authentication
   policy requires an authenticated user
 - Adds support for [`ReDoc`](https://github.com/Redocly/redoc) UI (see [the
-  documentation](https://www.neoteroi.dev/blacksheep/openapi/))
+  documentation](https://www.neoteroi.dev/shuttleasgi/openapi/))
 
 ## [1.0.1] - 2021-03-20 :cake:
-- Adds a built-in implementation for [sessions](https://www.neoteroi.dev/blacksheep/sessions/)
+- Adds a built-in implementation for [sessions](https://www.neoteroi.dev/shuttleasgi/sessions/)
 - Corrects a bug in cookie handling (#37!)
 - Fixes #90, i.e. missing CORS response headers when exception are used to
   control the request handler's flow
 - Corrects URLs in the README to point to [Neoteroi](https://github.com/Neoteroi),
-  also for [Codecov](https://app.codecov.io/gh/Neoteroi/BlackSheep)
+  also for [Codecov](https://app.codecov.io/gh/Neoteroi/ShuttleASGI)
 
 ## [1.0.0] - 2021-02-25 :hatching_chick:
 - Upgrades dependencies
@@ -797,13 +797,13 @@ if __name__ == "__main__":
 - Adds support for [Flask Variable Rules syntax](https://flask.palletsprojects.com/en/1.1.x/quickstart/?highlight=routing#variable-rules) (ref. #76) and more granular control on the
   route parameters' patterns when matching web requests
 - Adds the missing `html` method to the `Controller` class (#77) - thanks to
-  [skivis](https://github.com/Neoteroi/BlackSheep/commits?author=skivis)!
+  [skivis](https://github.com/Neoteroi/ShuttleASGI/commits?author=skivis)!
 - Deprecates the `ServeFilesOptions` class and reduces verbosity of the
   `Application.serve_files` method (#71)
 
 ## [0.3.1] - 2020-12-27 🎄
-- Implements an abstraction layer to [handle CORS](https://www.neoteroi.dev/blacksheep/cors/)
-- Improves the code API to handle [response cookies](https://www.neoteroi.dev/blacksheep/responses/#setting-cookies)
+- Implements an abstraction layer to [handle CORS](https://www.neoteroi.dev/shuttleasgi/cors/)
+- Improves the code API to handle [response cookies](https://www.neoteroi.dev/shuttleasgi/responses/#setting-cookies)
 - Improves the default handling of authorization for request handlers (#69)
 - Adds more binders: `FromText`, `FromBytes`, `RequestMethod`, `RequestURL`
 - Improves `FromJSON` binder to support returning the dictionary after JSON deserialization
@@ -821,7 +821,7 @@ if __name__ == "__main__":
 - Corrects inconsistent dependency causing an error in `pip-20.3.1`
 
 ## [0.2.8] - 2020-12-10 📜
-- Links to the new website with documentation: [https://www.neoteroi.dev/blacksheep/](https://www.neoteroi.dev/blacksheep/)
+- Links to the new website with documentation: [https://www.neoteroi.dev/shuttleasgi/](https://www.neoteroi.dev/shuttleasgi/)
 - Removes links to the GitHub Wiki
 
 ## [0.2.7] - 2020-11-28 :octocat:
@@ -835,7 +835,7 @@ if __name__ == "__main__":
 ## [0.2.6] - 2020-10-31 🎃
 
 - Adds support for routes defined using mustaches (not only colon notation)
-- Corrects two bugs happening when using `blacksheep` in Windows
+- Corrects two bugs happening when using `shuttleasgi` in Windows
 - Improves the test suite to be compatible with Windows
 - Adds a job running in Windows to the build and validation pipeline
 - Adds `after_start` application event, fired when startup has been completed
@@ -882,4 +882,4 @@ if __name__ == "__main__":
 - Replaces [`aiofiles`](https://github.com/Tinche/aiofiles) with dedicated file handling
 - Improves code quality
 - Improves code for integration tests
-- Fixes bug [#37](https://github.com/Neoteroi/BlackSheep/issues/37)
+- Fixes bug [#37](https://github.com/Neoteroi/ShuttleASGI/issues/37)

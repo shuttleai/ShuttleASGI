@@ -2,14 +2,14 @@ from typing import Optional
 
 import pytest
 
-from blacksheep import Content
-from blacksheep.contents import JSONContent
-from blacksheep.server.application import Application
-from blacksheep.server.bindings import FromHeader
-from blacksheep.server.controllers import Controller, RoutesRegistry
-from blacksheep.server.responses import Response
-from blacksheep.testing import AbstractTestSimulator, TestClient
-from blacksheep.testing.helpers import (
+from shuttleasgi import Content
+from shuttleasgi.contents import JSONContent
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.bindings import FromHeader
+from shuttleasgi.server.controllers import Controller, RoutesRegistry
+from shuttleasgi.server.responses import Response
+from shuttleasgi.testing import AbstractTestSimulator, TestClient
+from shuttleasgi.testing.helpers import (
     CookiesType,
     HeadersType,
     QueryType,

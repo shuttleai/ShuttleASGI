@@ -1,17 +1,17 @@
 import pytest
 
-from blacksheep import Content, Request, scribe
-from blacksheep.contents import FormPart, MultiPartFormData, StreamedContent
-from blacksheep.exceptions import BadRequestFormat
-from blacksheep.messages import get_absolute_url_to_path, get_request_absolute_url
-from blacksheep.scribe import write_request, write_small_request
-from blacksheep.server.asgi import (
+from shuttleasgi import Content, Request, scribe
+from shuttleasgi.contents import FormPart, MultiPartFormData, StreamedContent
+from shuttleasgi.exceptions import BadRequestFormat
+from shuttleasgi.messages import get_absolute_url_to_path, get_request_absolute_url
+from shuttleasgi.scribe import write_request, write_small_request
+from shuttleasgi.server.asgi import (
     get_request_url,
     get_request_url_from_scope,
     incoming_request,
 )
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.url import URL
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.url import URL
 
 
 def test_request_supports_dynamic_attributes():
@@ -501,7 +501,7 @@ def test_get_request_absolute_url_to_path(scope, path, expected_result):
 
 def test_can_set_request_host_and_scheme():
     scope = get_example_scope(
-        "GET", "/blacksheep/", scheme="http", server=["127.0.0.1", 80]
+        "GET", "/shuttleasgi/", scheme="http", server=["127.0.0.1", 80]
     )
     request = incoming_request(scope)
 
@@ -509,12 +509,12 @@ def test_can_set_request_host_and_scheme():
     request.host = "neoteroi.dev"
 
     absolute_url = get_request_absolute_url(request)
-    assert str(absolute_url) == "https://neoteroi.dev/blacksheep/"
+    assert str(absolute_url) == "https://neoteroi.dev/shuttleasgi/"
 
 
 def test_can_set_request_client_ip():
     scope = get_example_scope(
-        "GET", "/blacksheep/", scheme="http", server=["127.0.0.1", 80]
+        "GET", "/shuttleasgi/", scheme="http", server=["127.0.0.1", 80]
     )
     request = incoming_request(scope)
 
@@ -530,9 +530,9 @@ def test_can_set_request_client_ip():
 
 
 def test_updating_request_url_read_host():
-    request = Request("GET", b"https://www.neoteroi.dev/blacksheep", [])
+    request = Request("GET", b"https://www.neoteroi.dev/shuttleasgi", [])
 
-    assert request.path == "/blacksheep"
+    assert request.path == "/shuttleasgi"
     assert request.host == "www.neoteroi.dev"
 
     request.url = "https://github.com/RobertoPrevato"
@@ -542,9 +542,9 @@ def test_updating_request_url_read_host():
 
 
 async def test_updating_request_host_in_headers():
-    request = Request("GET", b"https://www.neoteroi.dev/blacksheep", [])
+    request = Request("GET", b"https://www.neoteroi.dev/shuttleasgi", [])
 
-    assert request.path == "/blacksheep"
+    assert request.path == "/shuttleasgi"
     assert request.host == "www.neoteroi.dev"
     assert request.headers[b"host"] == tuple()
 
@@ -563,12 +563,12 @@ async def test_updating_request_host_in_headers():
 
 
 async def test_write_request_cookies():
-    request = Request("GET", b"https://www.neoteroi.dev/blacksheep", [])
+    request = Request("GET", b"https://www.neoteroi.dev/shuttleasgi", [])
 
     request.set_cookie("example_1", "one")
     request.set_cookie("example_2", "two")
 
-    expected_bytes = b"""GET /blacksheep HTTP/1.1
+    expected_bytes = b"""GET /shuttleasgi HTTP/1.1
 cookie: example_1=one;example_2=two
 host: www.neoteroi.dev
 content-length: 0

@@ -4,9 +4,9 @@ Benchmarks testing functions used to write response bytes.
 
 from pathlib import Path
 
-from blacksheep.contents import TextContent
-from blacksheep.messages import Response
-from blacksheep.scribe import write_response
+from shuttleasgi.contents import TextContent
+from shuttleasgi.messages import Response
+from shuttleasgi.scribe import write_response
 from perf.benchmarks import async_benchmark, main_run
 
 ITERATIONS = 10000
@@ -23,7 +23,7 @@ RESPONSE_HEADERS = [
     (b"X-Content-Type-Options", b"nosniff"),
     (b"X-XSS-Protection", b"1; mode=block"),
     (b"Strict-Transport-Security", b"max-age=31536000; includeSubDomains"),
-    (b"Server", b"BlackSheep/1.0"),
+    (b"Server", b"ShuttleASGI/1.0"),
 ]
 
 

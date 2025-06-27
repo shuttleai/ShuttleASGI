@@ -1,8 +1,8 @@
 import uvicorn
 
-from blacksheep.server import Application
-from blacksheep.server.compression import use_gzip_compression
-from blacksheep.server.responses import json
+from shuttleasgi.server import Application
+from shuttleasgi.server.compression import use_gzip_compression
+from shuttleasgi.server.responses import json
 
 application = Application(show_error_details=True)
 app_3 = Application(show_error_details=True)

@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import pytest
 
-from blacksheep.common.files.asyncfs import FileContext, FilesHandler
+from shuttleasgi.common.files.asyncfs import FileContext, FilesHandler
 
 
 @pytest.fixture()

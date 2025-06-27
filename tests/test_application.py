@@ -18,17 +18,17 @@ from pydantic import VERSION as PYDANTIC_LIB_VERSION
 from pydantic import BaseModel, Field, ValidationError
 from rodi import Container, inject
 
-from blacksheep import (
+from shuttleasgi import (
     HTTPException,
     JSONContent,
     Request,
     Response,
     TextContent,
 )
-from blacksheep.contents import FormPart
-from blacksheep.exceptions import Conflict, InternalServerError, NotFound
-from blacksheep.server.application import Application, ApplicationSyncEvent
-from blacksheep.server.bindings import (
+from shuttleasgi.contents import FormPart
+from shuttleasgi.exceptions import Conflict, InternalServerError, NotFound
+from shuttleasgi.server.application import Application, ApplicationSyncEvent
+from shuttleasgi.server.bindings import (
     ClientInfo,
     FromBytes,
     FromCookie,
@@ -43,16 +43,16 @@ from blacksheep.server.bindings import (
     RequestUser,
     ServerInfo,
 )
-from blacksheep.server.di import di_scope_middleware
-from blacksheep.server.normalization import ensure_response
-from blacksheep.server.openapi.v3 import OpenAPIHandler
-from blacksheep.server.resources import get_resource_file_path
-from blacksheep.server.responses import status_code, text
-from blacksheep.server.routing import Router, SharedRouterError
-from blacksheep.server.security.hsts import HSTSMiddleware
-from blacksheep.server.sse import ServerSentEvent, TextServerSentEvent
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.di import di_scope_middleware
+from shuttleasgi.server.normalization import ensure_response
+from shuttleasgi.server.openapi.v3 import OpenAPIHandler
+from shuttleasgi.server.resources import get_resource_file_path
+from shuttleasgi.server.responses import status_code, text
+from shuttleasgi.server.routing import Router, SharedRouterError
+from shuttleasgi.server.security.hsts import HSTSMiddleware
+from shuttleasgi.server.sse import ServerSentEvent, TextServerSentEvent
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.utils.application import FakeApplication
 from tests.utils.folder import ensure_folder
 
@@ -62,7 +62,7 @@ try:
 except ImportError:
     # v1
     # v1 validate_arguments is not supported
-    # https://github.com/Neoteroi/BlackSheep/issues/559
+    # https://github.com/Neoteroi/ShuttleASGI/issues/559
     validate_call = None
 
 
@@ -3744,10 +3744,10 @@ async def test_custom_handler_for_404_not_found(app, param):
 
 @pytest.mark.parametrize("param", [404, NotFound])
 async def test_http_exception_handler_type_resolution(app, param):
-    # https://github.com/Neoteroi/BlackSheep/issues/538#issuecomment-2867564293
+    # https://github.com/Neoteroi/ShuttleASGI/issues/538#issuecomment-2867564293
 
     # THIS IS NOT RECOMMENDED! IT IS NOT RECOMMENDED TO USE A CATCH-ALL EXCEPTION
-    # HANDLER LIKE THE ONE BELOW. BLACKSHEEP AUTOMATICALLY HANDLES NON-HANDLED
+    # HANDLER LIKE THE ONE BELOW. SHUTTLEASGI AUTOMATICALLY HANDLES NON-HANDLED
     # EXCEPTIONS USING THE DIAGNOSTIC PAGES IF SHOW_ERROR_DETAILS IS ENABLED, AND USING
     # THE INTERNAL SERVER ERROR HANDLER OTHERWISE!
     # USE INSTEAD:
@@ -3778,7 +3778,7 @@ async def test_http_exception_handler_type_resolution(app, param):
 
 @pytest.mark.parametrize("param", [Conflict, 409])
 async def test_http_exception_handler_type_resolution_inheritance(app, param):
-    # https://github.com/Neoteroi/BlackSheep/issues/538#issuecomment-2867564293
+    # https://github.com/Neoteroi/ShuttleASGI/issues/538#issuecomment-2867564293
 
     @app.exception_handler(param)
     async def catch_conflicts(self: FakeApplication, request: Request, exc: Conflict):
@@ -3922,7 +3922,7 @@ async def test_hsts_middleware(app):
 async def test_pep_593(app):
     """
     Tests a scenario that was reported as bug here:
-    https://github.com/Neoteroi/BlackSheep/issues/257
+    https://github.com/Neoteroi/ShuttleASGI/issues/257
 
     Application start-up failed
     """
@@ -3980,7 +3980,7 @@ async def test_lifespan_event(app: Application):
 def test_mounting_apps_using_the_same_router_raises_error():
     # Recreates the scenario happening when the default singleton router is used for
     # both parent app and child app
-    # https://github.com/Neoteroi/BlackSheep/issues/443
+    # https://github.com/Neoteroi/ShuttleASGI/issues/443
     single_router = Router()
     Application(router=single_router)
 
@@ -3992,7 +3992,7 @@ async def test_application_sub_router_normalization():
     router = Router()
     app = FakeApplication(router=Router(sub_routers=[router]))
 
-    # https://github.com/Neoteroi/BlackSheep/issues/466
+    # https://github.com/Neoteroi/ShuttleASGI/issues/466
     @dataclass
     class Person:
         id: Optional[int] = None

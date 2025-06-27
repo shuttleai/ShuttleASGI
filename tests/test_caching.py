@@ -1,14 +1,14 @@
 import pytest
 
-from blacksheep.server.controllers import Controller
-from blacksheep.server.headers.cache import (
+from shuttleasgi.server.controllers import Controller
+from shuttleasgi.server.headers.cache import (
     CacheControlMiddleware,
     cache_control,
     write_cache_control_response_header,
 )
-from blacksheep.server.routing import RoutesRegistry
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.routing import RoutesRegistry
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 
 CACHE_CONTROL_PARAMS_EXPECTED = [
     ({"max_age": 0}, b"max-age=0"),

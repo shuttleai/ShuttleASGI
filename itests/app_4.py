@@ -7,15 +7,15 @@ from datetime import datetime
 import uvicorn
 from openapidocs.v3 import Info
 
-from blacksheep import JSONContent, Response
-from blacksheep.server import Application
-from blacksheep.server.bindings import FromJSON
-from blacksheep.server.compression import use_gzip_compression
-from blacksheep.server.openapi.ui import ReDocUIProvider, UIFilesOptions
-from blacksheep.server.openapi.v3 import OpenAPIHandler
-from blacksheep.server.responses import json
-from blacksheep.server.websocket import WebSocket
-from blacksheep.settings.json import default_json_dumps, json_settings
+from shuttleasgi import JSONContent, Response
+from shuttleasgi.server import Application
+from shuttleasgi.server.bindings import FromJSON
+from shuttleasgi.server.compression import use_gzip_compression
+from shuttleasgi.server.openapi.ui import ReDocUIProvider, UIFilesOptions
+from shuttleasgi.server.openapi.v3 import OpenAPIHandler
+from shuttleasgi.server.responses import json
+from shuttleasgi.server.websocket import WebSocket
+from shuttleasgi.settings.json import default_json_dumps, json_settings
 from itests.utils import get_test_files_url
 
 SINGLE_PID = None
@@ -24,7 +24,7 @@ SINGLE_PID = None
 def _validate_process_pid():
     # Explanation:
     # since we use global settings for JSON - which makes sense and is legitimate for
-    # users of BlackSheep - but we don't want to apply the same JSON settings to the
+    # users of ShuttleASGI - but we don't want to apply the same JSON settings to the
     # whole test suite (most tests should run using the default JSON settings), we
     # leverage process forking to apply global settings to a specific process.
     # To ensure that the test suite runs with the right JSON settings, here we validate

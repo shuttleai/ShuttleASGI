@@ -9,24 +9,24 @@ from guardpost.jwks import JWKS, InMemoryKeysProvider, KeysProvider
 from pytest import raises
 from rodi import Container
 
-from blacksheep.messages import Request
-from blacksheep.server.application import Application
-from blacksheep.server.authentication import (
+from shuttleasgi.messages import Request
+from shuttleasgi.server.application import Application
+from shuttleasgi.server.authentication import (
     AuthenticateChallenge,
     AuthenticationHandler,
 )
-from blacksheep.server.authentication.jwt import JWTBearerAuthentication
-from blacksheep.server.authorization import (
+from shuttleasgi.server.authentication.jwt import JWTBearerAuthentication
+from shuttleasgi.server.authorization import (
     AuthorizationWithoutAuthenticationError,
     Requirement,
     allow_anonymous,
     auth,
     get_www_authenticated_header_from_generic_unauthorized_error,
 )
-from blacksheep.server.di import di_scope_middleware, register_http_context
-from blacksheep.server.resources import get_resource_file_path
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.di import di_scope_middleware, register_http_context
+from shuttleasgi.server.resources import get_resource_file_path
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.test_files_serving import get_folder_path
 from tests.utils.application import FakeApplication
 
@@ -318,7 +318,7 @@ async def test_static_files_support_authentication_by_route(app):
 
 
 async def test_authorization_supports_allow_anonymous(app):
-    from blacksheep.server.responses import text
+    from shuttleasgi.server.responses import text
 
     app.use_authentication().add(MockNotAuthHandler())
 

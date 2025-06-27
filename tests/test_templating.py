@@ -4,12 +4,12 @@ from typing import List
 import pytest
 from pydantic import BaseModel
 
-from blacksheep.server.controllers import Controller, RoutesRegistry
-from blacksheep.server.rendering.jinja2 import get_template_name
-from blacksheep.server.responses import view, view_async
-from blacksheep.settings.html import html_settings
-from blacksheep.testing.helpers import get_example_scope
-from blacksheep.testing.messages import MockReceive, MockSend
+from shuttleasgi.server.controllers import Controller, RoutesRegistry
+from shuttleasgi.server.rendering.jinja2 import get_template_name
+from shuttleasgi.server.responses import view, view_async
+from shuttleasgi.settings.html import html_settings
+from shuttleasgi.testing.helpers import get_example_scope
+from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.utils.application import FakeApplication
 
 
@@ -67,7 +67,7 @@ def dataclass_model():
         [
             Sentence(
                 "Check this out!",
-                "https://github.com/Neoteroi/BlackSheep",
+                "https://github.com/Neoteroi/ShuttleASGI",
             )
         ],
     )
@@ -79,7 +79,7 @@ def class_model():
         [
             Sentence2(
                 "Check this out!",
-                "https://github.com/Neoteroi/BlackSheep",
+                "https://github.com/Neoteroi/ShuttleASGI",
             )
         ],
     )
@@ -91,7 +91,7 @@ def pydantic_model():
         sentences=[
             PydanticSentence(
                 text="Check this out!",
-                url="https://github.com/Neoteroi/BlackSheep",
+                url="https://github.com/Neoteroi/ShuttleASGI",
             )
         ],
     )
@@ -328,7 +328,7 @@ async def test_controller_model_interop(model_fixture):
         app,
         expected_text='<div style="margin: 10em 2em;">\n  <h1>Hello, World!!</h1>\n\n'
         + '  <ul>\n    \n      <li><a href="https://github.com/Neoteroi/'
-        + 'BlackSheep">Check this out!</a></li>\n    \n  </ul>\n</div>',
+        + 'ShuttleASGI">Check this out!</a></li>\n    \n  </ul>\n</div>',
     )
 
 

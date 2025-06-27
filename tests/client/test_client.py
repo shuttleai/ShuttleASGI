@@ -1,10 +1,10 @@
 import pytest
 
-from blacksheep import URL, Request, Response
-from blacksheep.client import ClientSession
-from blacksheep.client.connection import ClientConnection, ConnectionClosedError
-from blacksheep.client.exceptions import UnsupportedRedirect
-from blacksheep.client.session import normalize_headers
+from shuttleasgi import URL, Request, Response
+from shuttleasgi.client import ClientSession
+from shuttleasgi.client.connection import ClientConnection, ConnectionClosedError
+from shuttleasgi.client.exceptions import UnsupportedRedirect
+from shuttleasgi.client.session import normalize_headers
 
 
 @pytest.mark.parametrize(

@@ -5,6 +5,6 @@ title: ''
 
 ---
 
-##### _Note: consider using [Discussions](https://github.com/Neoteroi/BlackSheep/discussions) to open a conversation about new features…_
+##### _Note: consider using [Discussions](https://github.com/Neoteroi/ShuttleASGI/discussions) to open a conversation about new features…_
 
 **🚀 Feature Request**
