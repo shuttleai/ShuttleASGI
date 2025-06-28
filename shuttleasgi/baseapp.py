@@ -1,7 +1,7 @@
 import http
 import logging
 
-from .contents import Content, TextContent
+from .contents import Content, TextContent, JSONContent
 from .exceptions import HTTPException, InternalServerError, NotFound
 from .messages import Response
 from .utils import get_class_instance_hierarchy
@@ -13,7 +13,37 @@ except ImportError:
 
 
 async def handle_not_found(app, request, http_exception):
-    return Response(404, content=TextContent("Resource not found"))
+    method = request.method
+    path = request.url.path.decode()
+
+    return Response(
+        404,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "unknown_url",
+                "message": f"Invalid URL ({method} {path}).",
+                "param": None
+            }
+        })
+    )
+
+
+async def handle_wrong_method(app, request, http_exception):
+    method = request.method
+    path = request.url.path.decode()
+
+    return Response(
+        405,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "method_not_allowed",
+                "message": f"Not allowed to {method} on {path}.",
+                "param": None
+            }
+        })
+    )
 
 
 async def handle_internal_server_error(app, request, exception):
@@ -60,7 +90,7 @@ class BaseApplication:
         self.logger = get_logger()
 
     def init_exceptions_handlers(self):
-        default_handlers = {404: handle_not_found, 400: handle_bad_request}
+        default_handlers = {405: handle_wrong_method, 404: handle_not_found, 400: handle_bad_request}
         if ValidationError is not None:
             default_handlers[ValidationError] = (
                 _default_pydantic_validation_error_handler

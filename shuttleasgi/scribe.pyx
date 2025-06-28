@@ -376,7 +376,7 @@ cpdef bytes write_sse(ServerSentEvent event):
         value.extend(b"event: " + _NEW_LINES_RX.sub("", event.event).encode("utf8") + b"\n")
 
     if event.data:
-        value.extend(b"data: " + event.write_data().encode("utf8") + b"\n")
+        value.extend(b"data: " + event.write_data() + b"\n")
 
     if event.retry > -1:
         value.extend(b"retry: " + str(event.retry).encode() + b"\n")

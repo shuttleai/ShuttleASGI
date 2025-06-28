@@ -1,15 +1,27 @@
-import json
+import orjson as json
+
 from typing import Any
 
-from essentials.json import dumps
+
+def default_json_dumps(obj) -> bytes:
+    return json.dumps(
+        obj,
+        option=(
+            json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+        )
+    )
 
 
-def default_json_dumps(obj):
-    return dumps(obj, separators=(",", ":"))
-
-
-def default_pretty_json_dumps(obj):
-    return dumps(obj, indent=4)
+def default_pretty_json_dumps(obj) -> bytes:
+    return json.dumps(
+        obj,
+        option=(
+            json.OPT_SERIALIZE_NUMPY
+            | json.OPT_SERIALIZE_UUID
+            | json.OPT_INDENT_2
+        )
+    )
 
 
 class JSONSettings:
@@ -31,10 +43,10 @@ class JSONSettings:
     def loads(self, text: str) -> Any:
         return self._loads(text)
 
-    def dumps(self, obj: Any) -> str:
+    def dumps(self, obj: Any) -> bytes:
         return self._dumps(obj)
 
-    def pretty_dumps(self, obj: Any) -> str:
+    def pretty_dumps(self, obj: Any) -> bytes:
         return self._pretty_dumps(obj)
 
 

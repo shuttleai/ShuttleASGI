@@ -1,4 +1,4 @@
-import uuid
+import uuid_utils as uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import AsyncIterable, Callable, Optional, Set, TypedDict, Union

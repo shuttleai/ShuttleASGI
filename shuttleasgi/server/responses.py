@@ -2,7 +2,7 @@ import ntpath
 from enum import Enum
 from functools import lru_cache
 from io import BytesIO
-from typing import Any, AnyStr, AsyncIterable, Callable, Optional, Union
+from typing import Any, AnyStr, AsyncIterable, Callable, Optional, Union, List, Tuple
 
 from shuttleasgi import Content, JSONContent, Response, StreamedContent, TextContent
 from shuttleasgi.common.files.asyncfs import FilesHandler
@@ -33,7 +33,7 @@ def _ensure_bytes(value: AnyStr) -> bytes:
 
 
 def _json_serialize(obj) -> str:
-    return json_settings.dumps(obj)
+    return json_settings.dumps(obj).decode()
 
 
 def _json_content(obj) -> JSONContent:
@@ -186,17 +186,17 @@ def html(value: str, status: int = 200) -> Response:
     )
 
 
-def json(data: Any, status: int = 200) -> Response:
+def json(data: Any, status: int = 200, headers: Optional[List[Tuple[bytes, bytes]]] = None) -> Response:
     """
     Returns a response with application/json content,
     and given status (default HTTP 200 OK).
     """
     return Response(
         status,
-        None,
+        headers,
         Content(
             b"application/json",
-            json_settings.dumps(data).encode("utf8"),
+            json_settings.dumps(data),
         ),
     )
 
@@ -204,7 +204,7 @@ def json(data: Any, status: int = 200) -> Response:
 def pretty_json(
     data: Any,
     status: int = 200,
-    indent: int = 4,
+    headers: Optional[List[Tuple[bytes, bytes]]] = None
 ) -> Response:
     """
     Returns a response with indented application/json content,
@@ -212,10 +212,10 @@ def pretty_json(
     """
     return Response(
         status,
-        None,
+        headers,
         Content(
             b"application/json",
-            json_settings.pretty_dumps(data).encode("utf8"),
+            json_settings.pretty_dumps(data),
         ),
     )
 

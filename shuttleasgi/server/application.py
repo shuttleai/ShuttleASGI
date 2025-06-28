@@ -218,6 +218,7 @@ class Application(BaseApplication):
 
         if parent_file:
             _auto_import_controllers(parent_file)
+            _auto_import_api(parent_file)
             _auto_import_routes(parent_file)
 
         if env_settings.add_signal_handler:
@@ -873,6 +874,10 @@ def _auto_import(parent_file: str, folder_name):
 
 def _auto_import_controllers(parent_file: str):
     _auto_import(parent_file, "controllers")
+
+
+def _auto_import_api(parent_file: str):
+    _auto_import(parent_file, "api")
 
 
 def _auto_import_routes(parent_file: str):

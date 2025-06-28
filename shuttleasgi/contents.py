@@ -1,4 +1,4 @@
-import uuid
+import uuid_utils as uuid
 from collections.abc import MutableSequence
 from inspect import isasyncgenfunction
 from typing import Dict, List, Optional, Tuple, Union
@@ -94,7 +94,7 @@ class HTMLContent(Content):
 
 class JSONContent(Content):
     def __init__(self, data, dumps=json_settings.dumps):
-        super().__init__(b"application/json", dumps(data).encode("utf8"))
+        super().__init__(b"application/json", dumps(data))
 
 
 def parse_www_form_urlencoded(content: str) -> dict:
@@ -255,8 +255,8 @@ class ServerSentEvent:
         self.retry = retry
         self.comment = comment
 
-    def write_data(self) -> str:
-        return json_settings.dumps(self.data)
+    def write_data(self) -> bytes:
+        return json_settings.dumps(self.data).decode()
 
     def __repr__(self):
         return f"ServerSentEvent({self.data})"
@@ -273,5 +273,5 @@ class TextServerSentEvent(ServerSentEvent):
     ):
         super().__init__(data, event, id, retry, comment)
 
-    def write_data(self) -> str:
-        return self.data.replace("\r", "\\r").replace("\n", "\\n")
+    def write_data(self) -> bytes:
+        return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")

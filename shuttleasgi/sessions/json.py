@@ -16,4 +16,4 @@ class JSONSerializer(SessionSerializer):
         return Session(json_settings.loads(value))
 
     def write(self, session: Session) -> str:
-        return json_settings.dumps(session.to_dict())
+        return json_settings.dumps(session.to_dict()).decode()

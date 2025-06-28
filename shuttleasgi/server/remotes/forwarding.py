@@ -93,13 +93,13 @@ class ForwardedHeaderEntry:
         self,
         forwarded_for: str,
         forwarded_by: str = "",
-        forwarded_host: str = "",
-        forwarded_proto: str = "",
+        # forwarded_host: str = "",
+        # forwarded_proto: str = "",
     ):
         self.forwarded_for = forwarded_for
         self.forwarded_by = forwarded_by
-        self.forwarded_host = forwarded_host
-        self.forwarded_proto = forwarded_proto
+        # self.forwarded_host = forwarded_host
+        # self.forwarded_proto = forwarded_proto
 
     def __eq__(self, o: object) -> bool:
         if isinstance(o, ForwardedHeaderEntry):
@@ -127,8 +127,8 @@ def parse_forwarded_header(header_value: AnyStr) -> Iterable[ForwardedHeaderEntr
 
         forwarded_for: str = ""
         forwarded_by: str = ""
-        forwarded_host: str = ""
-        forwarded_proto: str = ""
+        # forwarded_host: str = ""
+        # forwarded_proto: str = ""
 
         for directive in directives:
             directive = directive.strip()
@@ -139,90 +139,15 @@ def parse_forwarded_header(header_value: AnyStr) -> Iterable[ForwardedHeaderEntr
             if directive.lower().startswith("by="):
                 forwarded_by = _strip_chars(directive[3:])
 
-            if directive.lower().startswith("host="):
-                forwarded_host = _strip_chars(directive[5:])
+            # if directive.lower().startswith("host="):
+            #     forwarded_host = _strip_chars(directive[5:])
 
-            if directive.lower().startswith("proto="):
-                forwarded_proto = _strip_chars(directive[6:])
+            # if directive.lower().startswith("proto="):
+            #     forwarded_proto = _strip_chars(directive[6:])
 
         yield ForwardedHeaderEntry(
-            forwarded_for, forwarded_by, forwarded_host, forwarded_proto
+            forwarded_for, forwarded_by  # , forwarded_host, forwarded_proto
         )
-
-
-class ForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
-    """
-    Class that handles the standard Forwarded header. This middleware should be
-    configured early in the chain of middlewares, as it validates and updates each
-    request to apply the proper protocol, host, and client ip information.
-    """
-
-    def __init__(
-        self,
-        allowed_hosts: Optional[Sequence[str]] = None,
-        known_proxies: Optional[Sequence[IPAddress]] = None,
-        known_networks: Optional[Sequence[IPNetwork]] = None,
-        forward_limit: int = 1,
-        accept_only_proxied_requests: bool = True,
-    ) -> None:
-        super().__init__(
-            allowed_hosts,
-            known_proxies,
-            known_networks,
-            forward_limit=forward_limit,
-            accept_only_proxied_requests=accept_only_proxied_requests,
-        )
-
-    def get_forwarded_values(self, headers: Headers) -> Iterable[ForwardedHeaderEntry]:
-        forwarded_headers = headers[b"Forwarded"]
-
-        for header in forwarded_headers:
-            yield from parse_forwarded_header(header)
-
-    def validate_forwarded_entries(
-        self, entries: Sequence[ForwardedHeaderEntry]
-    ) -> None:
-        if len(entries) > self.forward_limit:
-            raise TooManyForwardValues(len(entries))
-
-        for entry in entries:
-            if entry.forwarded_host:
-                self.validate_host(entry.forwarded_host)
-
-            if entry.forwarded_by:
-                # the value can be an IP address, but it does not have to;
-                # it can be any string
-                # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
-                try:
-                    ip = ip_address(entry.forwarded_by)
-                except ValueError:
-                    pass
-                else:
-                    self.validate_proxy_ip(ip)
-
-    async def __call__(self, request: Request, handler):
-        # Forwarded: by=<identifier>;for=<identifier>;host=<host>;proto=<http|https>
-        if self.should_validate_client_ip():
-            self.validate_proxy_ip(ip_address(request.client_ip))
-
-        forwarded_entries = list(self.get_forwarded_values(request.headers))
-
-        if forwarded_entries:
-            self.validate_forwarded_entries(forwarded_entries)
-            first_entry = forwarded_entries[0]
-
-            if first_entry.forwarded_host:
-                request.host = first_entry.forwarded_host
-
-            if first_entry.forwarded_proto:
-                request.scheme = first_entry.forwarded_proto
-
-            if first_entry.forwarded_for:
-                # Note: if the proxy server is configured to send an obfuscated
-                # identifier, like "_hidden", we set it here anyway
-                request.original_client_ip = first_entry.forwarded_for
-
-        return await handler(request)
 
 
 class XForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
@@ -271,8 +196,8 @@ class XForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
             accept_only_proxied_requests=accept_only_proxied_requests,
         )
         self.forwarded_for_header_name = b"X-Forwarded-For"
-        self.forwarded_host_header_name = b"X-Forwarded-Host"
-        self.forwarded_proto_header_name = b"X-Forwarded-Proto"
+        # self.forwarded_host_header_name = b"X-Forwarded-Host"
+        # self.forwarded_proto_header_name = b"X-Forwarded-Proto"
 
     def get_forwarded_for(self, headers: Headers) -> List[IPAddress]:
         # X-Forwarded-For: <client>, <proxy1>, <proxy2>
@@ -291,33 +216,33 @@ class XForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
             self.parse_ip(addr) for addr in (a.strip() for a in forwarded_for) if addr
         ]
 
-    def get_forwarded_proto(self, headers: Headers) -> List[str]:
-        # X-Forwarded-Proto: https
-        forwarded_proto_headers: List[bytes] = list(
-            headers[self.forwarded_proto_header_name]
-        )
+    # def get_forwarded_proto(self, headers: Headers) -> List[str]:
+    #     # X-Forwarded-Proto: https
+    #     forwarded_proto_headers: List[bytes] = list(
+    #         headers[self.forwarded_proto_header_name]
+    #     )
 
-        if not forwarded_proto_headers:
-            return []
+    #     if not forwarded_proto_headers:
+    #         return []
 
-        if len(forwarded_proto_headers) > 1:
-            raise TooManyHeaders(self.forwarded_proto_header_name)
+    #     if len(forwarded_proto_headers) > 1:
+    #         raise TooManyHeaders(self.forwarded_proto_header_name)
 
-        forwarded_proto = forwarded_proto_headers[0].decode().split(",")
-        return [p.strip() for p in forwarded_proto]
+    #     forwarded_proto = forwarded_proto_headers[0].decode().split(",")
+    #     return [p.strip() for p in forwarded_proto]
 
-    def get_forwarded_host(self, headers: Headers) -> Optional[str]:
-        # X-Forwarded-Host: id42.example-cdn.com
-        # original host requested by the client in the Host HTTP request header.
-        forwarded_hosts = headers[self.forwarded_host_header_name]
+    # def get_forwarded_host(self, headers: Headers) -> Optional[str]:
+    #     # X-Forwarded-Host: id42.example-cdn.com
+    #     # original host requested by the client in the Host HTTP request header.
+    #     forwarded_hosts = headers[self.forwarded_host_header_name]
 
-        if not forwarded_hosts:
-            return None
+    #     if not forwarded_hosts:
+    #         return None
 
-        if len(forwarded_hosts) > 1:
-            raise TooManyHeaders(self.forwarded_host_header_name)
+    #     if len(forwarded_hosts) > 1:
+    #         raise TooManyHeaders(self.forwarded_host_header_name)
 
-        return forwarded_hosts[0].decode()
+    #     return forwarded_hosts[0].decode()
 
     def validate_forwarded_for(self, values: List[IPAddress]) -> None:
         if len(values) > self.forward_limit:
@@ -328,35 +253,35 @@ class XForwardedHeadersMiddleware(BaseForwardedHeadersMiddleware):
 
         self.validate_proxies_ips(proxies)
 
-    def validate_forwarded_proto(self, values: List[str]) -> None:
-        if len(values) > self.forward_limit:
-            raise TooManyForwardValues(len(values))
+    # def validate_forwarded_proto(self, values: List[str]) -> None:
+    #     if len(values) > self.forward_limit:
+    #         raise TooManyForwardValues(len(values))
 
     async def __call__(self, request: Request, handler):
-        if self.should_validate_client_ip():
-            self.validate_proxy_ip(ip_address(request.client_ip))
+        # if self.should_validate_client_ip():
+        #     self.validate_proxy_ip(ip_address(request.client_ip))
 
         headers = request.headers
         forwarded_for = self.get_forwarded_for(headers)
-        forwarded_host = self.get_forwarded_host(headers)
-        forwarded_proto = self.get_forwarded_proto(headers)
+        # forwarded_host = self.get_forwarded_host(headers)
+        # forwarded_proto = self.get_forwarded_proto(headers)
 
-        if forwarded_host:
-            self.validate_host(forwarded_host)
+        # if forwarded_host:
+        #     self.validate_host(forwarded_host)
 
-            request.host = forwarded_host
-        else:
-            # validate the host from the Host header anyway
-            self.validate_host(request.host)
+        #     request.host = forwarded_host
+        # else:
+        #     # validate the host from the Host header anyway
+        #     self.validate_host(request.host)
 
         if forwarded_for:
-            self.validate_forwarded_for(forwarded_for)
+            # self.validate_forwarded_for(forwarded_for)
 
             request.original_client_ip = str(forwarded_for[0])
 
-        if forwarded_proto:
-            self.validate_forwarded_proto(forwarded_proto)
+        # if forwarded_proto:
+        #     self.validate_forwarded_proto(forwarded_proto)
 
-            request.scheme = forwarded_proto[0]
+        #     request.scheme = forwarded_proto[0]
 
         return await handler(request)

@@ -30,7 +30,7 @@ class TestWebSocket:
         await self.send(
             {
                 "type": "websocket.send",
-                "text": json_settings.dumps(data),
+                "text": json_settings.dumps(data).decode(),
             }
         )
 

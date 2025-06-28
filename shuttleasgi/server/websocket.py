@@ -159,13 +159,13 @@ class WebSocket(Request):
     async def send_json(
         self, data: MutableMapping[Any, Any], mode: MessageMode = MessageMode.TEXT
     ):
-        text = json_settings.dumps(data)
+        json_bytes = json_settings.dumps(data)
 
         if mode == MessageMode.TEXT:
-            return await self.send_text(text)
+            return await self.send_text(json_bytes.decode())
 
         if mode == MessageMode.BYTES:
-            return await self.send_bytes(text.encode())
+            return await self.send_bytes(json_bytes)
 
     def _wrap_receive(self, _receive: Callable):
         @wraps(_receive)

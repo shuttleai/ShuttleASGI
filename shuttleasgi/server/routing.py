@@ -674,6 +674,7 @@ class Router(RouterBase):
         "_filters",
         "_prefix",
         "_registered_routes",
+        "_path_to_methods"
     )
 
     def __init__(
@@ -702,6 +703,7 @@ class Router(RouterBase):
         self.controllers_routes = RoutesRegistry()  # used during controllers setup
         self._sub_routers = sub_routers
         self._registered_routes = []  # used during setup
+        self._path_to_methods: Dict[bytes, Set[bytes]] = defaultdict(set)
 
         if self._filters:
             extend(self, RouterFiltersMixin)
@@ -898,6 +900,7 @@ class Router(RouterBase):
         if not isinstance(route, FilterRoute):
             self._check_duplicate(method_bytes, route)
         self.routes[method_bytes].append(route)
+        self._path_to_methods[route.pattern].add(method_bytes)
 
     def sort_routes(self):
         """

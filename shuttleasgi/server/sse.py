@@ -39,6 +39,11 @@ class ServerSentEventsContent(StreamedContent):
 
         return write_events
 
+_DEFAULT_HEADERS = [
+    (b"Cache-Control", b"no-cache"),
+    (b"Connection", b"Keep-Alive"),
+    (b"X-Accel-Buffering", b"no")
+]
 
 class ServerSentEventsResponse(Response):
     """
@@ -52,5 +57,5 @@ class ServerSentEventsResponse(Response):
         headers: Optional[List[Tuple[bytes, bytes]]] = None,
     ) -> None:
         if headers is None:
-            headers = [(b"Cache-Control", b"no-cache"), (b"Connection", b"Keep-Alive")]
+            headers = _DEFAULT_HEADERS
         super().__init__(status, headers, ServerSentEventsContent(events_provider))

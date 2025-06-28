@@ -1,5 +1,5 @@
-import json
-import uuid
+import orjson as json
+import uuid_utils as uuid
 from collections.abc import MutableSequence
 from inspect import isasyncgenfunction
 from typing import Dict, List, Optional, Tuple, Union
@@ -123,7 +123,7 @@ cdef class HTMLContent(Content):
 cdef class JSONContent(Content):
 
     def __init__(self, object data, dumps=json_settings.dumps):
-        super().__init__(b'application/json', dumps(data).encode('utf8'))
+        super().__init__(b'application/json', dumps(data))
 
 
 cdef dict parse_www_form_urlencoded(str content):
@@ -339,4 +339,4 @@ cdef class TextServerSentEvent(ServerSentEvent):
 
     cpdef str write_data(self):
         # Escape \r\n to avoid issues with data containing EOL
-        return self.data.replace("\r", "\\r").replace("\n", "\\n")
+        return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")

@@ -1,4 +1,4 @@
-import uuid
+import uuid_utils as uuid
 from typing import (
     Any,
     AsyncIterable,
@@ -55,15 +55,15 @@ class HTMLContent(Content):
     def __init__(self, html: str):
         super().__init__(b"text/html; charset=utf-8", html.encode("utf8"))
 
-def default_json_dumps(value: Any) -> str: ...
+def default_json_dumps(value: Any) -> bytes: ...
 
 class JSONContent(Content):
-    def __init__(self, data: object, dumps: Callable[[Any], str] = default_json_dumps):
+    def __init__(self, data: object, dumps: Callable[[Any], bytes] = default_json_dumps):
         """
         Creates an instance of JSONContent class, automatically serializing the given
         input in JSON format, encoded using UTF-8.
         """
-        super().__init__(b"application/json", dumps(data).encode("utf8"))
+        super().__init__(b"application/json", dumps(data))
 
 class FormContent(Content):
     def __init__(self, data: Union[Dict[str, str], List[Tuple[str, str]]]):
@@ -135,7 +135,7 @@ class ServerSentEvent:
         self.retry = retry
         self.comment = comment
 
-    def write_data(self) -> str: ...
+    def write_data(self) -> bytes: ...
 
 class TextServerSentEvent(ServerSentEvent):
     def __init__(
@@ -148,4 +148,4 @@ class TextServerSentEvent(ServerSentEvent):
     ):
         super().__init__(data, event, id, retry, comment)
 
-    def write_data(self) -> str: ...
+    def write_data(self) -> bytes: ...

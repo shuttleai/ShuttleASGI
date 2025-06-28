@@ -1,7 +1,7 @@
 import http
 import logging
 
-from .contents cimport Content, TextContent
+from .contents cimport Content, TextContent, JSONContent
 from .exceptions cimport BadRequest, HTTPException, InternalServerError, NotFound
 from .messages cimport Request, Response
 
@@ -16,7 +16,37 @@ except ImportError:
 
 async def handle_not_found(app, Request request, HTTPException http_exception):
     """Default Not Found handler, returns a simple 404 response."""
-    return Response(404, content=TextContent("Resource not found"))
+    cdef method = request.method
+    cdef path = request.url.path.decode()
+
+    return Response(
+        404,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "unknown_url",
+                "message": f"Invalid URL ({method} {path}).",
+                "param": None
+            }
+        })
+    )
+
+
+async def handle_wrong_method(app, Request request, HTTPException http_exception):
+    cdef str method = request.method
+    cdef str path = request.url.path.decode()
+
+    return Response(
+        405,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "method_not_allowed",
+                "message": f"Not allowed to {method} on {path}.",
+                "param": None
+            }
+        })
+    )
 
 
 async def handle_internal_server_error(app, Request request, Exception exception):

@@ -6,6 +6,7 @@ from typing import (
     Callable,
     ClassVar,
     List,
+    Tuple,
     Optional,
     Sequence,
     Type,
@@ -251,19 +252,19 @@ class Controller(metaclass=ControllerMeta):
         """
         return html(data, status)
 
-    def json(self, data, status: int = 200) -> Response:
+    def json(self, data, status: int = 200, headers: Optional[List[Tuple[bytes, bytes]]] = None) -> Response:
         """
         Returns a response with application/json content, and given status
         (default HTTP 200 OK).
         """
-        return json(data, status)
+        return json(data, status, headers)
 
-    def pretty_json(self, data: Any, status: int = 200, indent: int = 4) -> Response:
+    def pretty_json(self, data: Any, status: int = 200, headers: Optional[List[Tuple[bytes, bytes]]] = None) -> Response:
         """
         Returns a response with indented application/json content,
         and given status (default HTTP 200 OK).
         """
-        return pretty_json(data, status=status, indent=indent)
+        return pretty_json(data, status=status, headers=headers)
 
     def text(self, value: str, status: int = 200) -> Response:
         """
