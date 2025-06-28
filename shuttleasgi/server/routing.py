@@ -901,6 +901,9 @@ class Router(RouterBase):
             self._check_duplicate(method_bytes, route)
         self.routes[method_bytes].append(route)
         self._path_to_methods[route.pattern].add(method_bytes)
+        pattern_no_slash = route.pattern.rstrip(b"/")
+        if pattern_no_slash != route.pattern:
+            self._path_to_methods[pattern_no_slash].add(method_bytes)
 
     def sort_routes(self):
         """
@@ -955,6 +958,45 @@ class Router(RouterBase):
             if match:
                 return route
         return None
+
+    @lru_cache(maxsize=2000)
+    def get_methods_for_path(self, path: bytes) -> Optional[Set[bytes]]:
+        """
+        Ultra-fast method lookup - O(1) for exact matches, fallback to pattern matching.
+        """
+        # Direct lookup first - this is O(1)
+        methods = self._path_to_methods.get(path)
+        if methods:
+            return methods
+        
+        # Try without trailing slash
+        if path.endswith(b"/"):
+            methods = self._path_to_methods.get(path[:-1])
+            if methods:
+                return methods
+        else:
+            methods = self._path_to_methods.get(path + b"/")
+            if methods:
+                return methods
+        
+        # Only do pattern matching if no exact match (this is the slow path)
+        # But we can optimize by only checking routes that could possibly match
+        matched_methods = set()
+        path_lower = path.lower()
+        
+        # Check only routes with parameters (since exact matches already failed)
+        for pattern, methods in self._path_to_methods.items():
+            if b"<" in pattern or b"{" in pattern or b":" in pattern or b"*" in pattern:
+                # This is a pattern route - need to check if it matches
+                for method in methods:
+                    # Get first route for this method/pattern combo to test
+                    for route in self.routes[method]:
+                        if route.pattern == pattern and route.match_by_path(path_lower):
+                            matched_methods.update(methods)
+                            break
+                    break  # Only need to test one route per pattern
+        
+        return matched_methods if matched_methods else None
 
 
 class RegisteredRoute:

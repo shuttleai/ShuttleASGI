@@ -243,20 +243,12 @@ class ServerSentEvent:
 
     def __init__(
         self,
-        data,
-        event: Optional[str] = None,
-        id: Optional[str] = None,
-        retry: Optional[int] = -1,
-        comment: Optional[str] = None,
+        data
     ):
         self.data = data
-        self.event = event
-        self.id = id
-        self.retry = retry
-        self.comment = comment
 
     def write_data(self) -> bytes:
-        return json_settings.dumps(self.data).decode()
+        return json_settings.dumps(self.data)
 
     def __repr__(self):
         return f"ServerSentEvent({self.data})"
@@ -266,12 +258,8 @@ class TextServerSentEvent(ServerSentEvent):
     def __init__(
         self,
         data: str,
-        event: Optional[str] = None,
-        id: Optional[str] = None,
-        retry: Optional[int] = -1,
-        comment: Optional[str] = None,
     ):
-        super().__init__(data, event, id, retry, comment)
+        super().__init__(data)
 
     def write_data(self) -> bytes:
         return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")

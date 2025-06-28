@@ -477,13 +477,13 @@ class APIController(Controller):
         Example:
             if version is 'v1', and base route 'cat'; all route handlers
             defined on the controller have prefix:
-            /api/v1/cat
+            /v1/cat
 
             if the class name ends with the version string, the suffix is
             automatically removed from routes, so:
             class CatV2; with version() -> "v2"; produces such routes:
-            /api/v2/cat
-            And not, ~/api/v2/catv2~!
+            /v2/cat
+            And not, ~/v2/catv2~!
         """
         return None
 
@@ -493,7 +493,7 @@ class APIController(Controller):
         cls_version = cls.version() or ""
         if cls_version and cls_name.endswith(cls_version.lower()):
             cls_name = cls_name[: -len(cls_version)]
-        return join_fragments("api", cls_version, cls_name)
+        return join_fragments(cls_version, cls_name)
 
 
 class ControllersManager:

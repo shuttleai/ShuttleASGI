@@ -17,6 +17,10 @@ cdef class BadRequestFormat(BadRequest):
     cdef public object inner_exception
 
 
+cdef class WrongMethod(HTTPException):
+    pass
+
+
 cdef class NotFound(HTTPException):
     pass
 

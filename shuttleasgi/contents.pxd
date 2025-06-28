@@ -46,10 +46,6 @@ cdef class FormPart:
 
 cdef class ServerSentEvent:
     cdef readonly object data
-    cdef readonly str event
-    cdef readonly str id
-    cdef readonly int retry
-    cdef readonly str comment
     cpdef bytes write_data(self)
 
 

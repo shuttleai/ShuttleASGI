@@ -26,7 +26,7 @@ from shuttleasgi import (
     TextContent,
 )
 from shuttleasgi.contents import FormPart
-from shuttleasgi.exceptions import Conflict, InternalServerError, NotFound
+from shuttleasgi.exceptions import Conflict, InternalServerError, NotFound, WrongMethod
 from shuttleasgi.server.application import Application, ApplicationSyncEvent
 from shuttleasgi.server.bindings import (
     ClientInfo,
@@ -3742,6 +3742,58 @@ async def test_custom_handler_for_404_not_found(app, param):
     assert actual_response_text == "Called"
 
 
+@pytest.mark.parametrize("param", [405, WrongMethod])
+async def test_custom_handler_for_405_wrong_method(app, param):
+    @app.exception_handler(param)
+    async def not_found_handler(
+        self: FakeApplication, request: Request, exc: WrongMethod
+    ) -> Response:
+        nonlocal app
+        assert self is app
+        assert isinstance(exc, WrongMethod)
+        return Response(200, content=TextContent("Called"))
+
+    @app.router.get("/")
+    async def home():
+        raise WrongMethod()
+
+    await app(get_example_scope("GET", "/"), MockReceive(), MockSend())
+
+    assert app.response is not None
+    response: Response = app.response
+
+    assert response
+    actual_response_text = await response.text()
+    assert actual_response_text == "Called"
+
+
+async def test_method_not_allowed(app):
+    @app.router.get("/test")
+    async def test_route():
+        return "OK"
+
+    await app(
+        get_example_scope("GET", "/test", []),
+        MockReceive(),
+        MockSend(),
+    )
+
+    response = app.response
+    assert response.status == 200
+    assert (await response.text()) == "OK"
+
+    await app(
+        get_example_scope("POST", "/test", []),
+        MockReceive(),
+        MockSend(),
+    )
+
+    response = app.response
+    assert response.status == 405
+    assert response.headers.get_single(b"Allow") == b"GET"
+    assert "Not allowed to POST on /test." in (await response.text())
+
+
 @pytest.mark.parametrize("param", [404, NotFound])
 async def test_http_exception_handler_type_resolution(app, param):
     # https://github.com/Neoteroi/ShuttleASGI/issues/538#issuecomment-2867564293
@@ -4108,6 +4160,44 @@ async def test_refs_characters_handling():
         ), "$ref values must match /^[a-zA-Z0-9-_.]+$/"
         assert f'"$ref": "#/components/schemas/{key}"' in json_docs
         assert f"$ref: '#/components/schemas/{key}'" in yaml_docs
+
+
+async def test_application_sse_openai():
+    app = FakeApplication(show_error_details=True, router=Router())
+    get = app.router.get
+
+    @get("/events")
+    async def events_handler() -> AsyncIterable[ServerSentEvent]:
+        for i in range(3):
+            yield ServerSentEvent({"message": f"Hello World {i}"})
+            await asyncio.sleep(0.05)
+        yield TextServerSentEvent("[DONE]")
+
+
+    scope = get_example_scope("GET", "/events", [])
+    mock_send = MockSend()
+
+    await app(scope, MockReceive(), mock_send)
+
+    # Assert response status
+    response = app.response
+    assert response is not None
+    assert response.status == 200
+
+    # Assert Content-Type header
+    assert response.headers.get_first(b"content-type") == b"text/event-stream"
+
+    # Assert streamed events
+    streamed_data = b"".join(
+        [msg["body"] for msg in mock_send.messages if "body" in msg]
+    )
+    expected_events = (
+        'data: {"message":"Hello World 0"}\n\n'
+        'data: {"message":"Hello World 1"}\n\n'
+        'data: {"message":"Hello World 2"}\n\n'
+        'data: [DONE]\n\n'
+    )
+    assert streamed_data.decode("utf-8") == expected_events
 
 
 async def test_application_sse():

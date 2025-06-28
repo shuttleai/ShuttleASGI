@@ -34,6 +34,12 @@ cdef class FailedRequestError(HTTPException):
         self.data = data
 
 
+cdef class WrongMethod(HTTPException):
+
+    def __init__(self, message=None):
+        super().__init__(405, message or "Wrong method")
+
+
 cdef class NotFound(HTTPException):
 
     def __init__(self, message=None):

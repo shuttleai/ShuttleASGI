@@ -31,6 +31,11 @@ class FailedRequestError(HTTPException):
         self.data = data
 
 
+class WrongMethod(HTTPException):
+    def __init__(self, message=None):
+        super().__init__(405, message or "Wrong method")
+
+
 class NotFound(HTTPException):
     def __init__(self, message=None):
         super().__init__(404, message or "Not found")

@@ -365,21 +365,8 @@ cpdef bytes write_sse(ServerSentEvent event):
     """
     cdef bytearray value = bytearray()
 
-    if event.id:
-        value.extend(b"id: " + _NEW_LINES_RX.sub("", event.id).encode("utf8") + b"\n")
-
-    if event.comment:
-        for part in _NEW_LINES_RX.split(event.comment):
-            value.extend(b": " + part.encode("utf8") + b"\n")
-
-    if event.event:
-        value.extend(b"event: " + _NEW_LINES_RX.sub("", event.event).encode("utf8") + b"\n")
-
     if event.data:
         value.extend(b"data: " + event.write_data() + b"\n")
-
-    if event.retry > -1:
-        value.extend(b"retry: " + str(event.retry).encode() + b"\n")
 
     value.extend(b"\n")
     return bytes(value)

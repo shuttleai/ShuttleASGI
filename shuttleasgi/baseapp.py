@@ -2,7 +2,7 @@ import http
 import logging
 
 from .contents import Content, TextContent, JSONContent
-from .exceptions import HTTPException, InternalServerError, NotFound
+from .exceptions import HTTPException, InternalServerError, NotFound, WrongMethod
 from .messages import Response
 from .utils import get_class_instance_hierarchy
 
@@ -10,23 +10,6 @@ try:
     from pydantic import ValidationError
 except ImportError:
     ValidationError = None
-
-
-async def handle_not_found(app, request, http_exception):
-    method = request.method
-    path = request.url.path.decode()
-
-    return Response(
-        404,
-        content=JSONContent({
-            "error": {
-                "type": "invalid_request_error",
-                "code": "unknown_url",
-                "message": f"Invalid URL ({method} {path}).",
-                "param": None
-            }
-        })
-    )
 
 
 async def handle_wrong_method(app, request, http_exception):
@@ -40,6 +23,23 @@ async def handle_wrong_method(app, request, http_exception):
                 "type": "invalid_request_error",
                 "code": "method_not_allowed",
                 "message": f"Not allowed to {method} on {path}.",
+                "param": None
+            }
+        })
+    )
+
+
+async def handle_not_found(app, request, http_exception):
+    method = request.method
+    path = request.url.path.decode()
+
+    return Response(
+        404,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "unknown_url",
+                "message": f"Invalid URL ({method} {path}).",
                 "param": None
             }
         })

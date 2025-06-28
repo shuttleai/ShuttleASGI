@@ -280,32 +280,18 @@ cdef class ServerSentEvent:
 
     Attributes:
         data: An object that will be transmitted to the client, in JSON format.
-        event: Optional event name.
-        id: Optional event ID to set the EventSource's last event ID value.
-        retry: The reconnection time. If the connection to the server is lost,
-               the browser will wait for the specified time before attempting
-               to reconnect.
-        comment: Optional comment.
     """
 
     def __init__(
         self,
         object data,
-        str event = None,
-        str id = None,
-        int retry = -1,
-        str comment = None,
     ):
         """
         Creates an instance of ServerSentEvent
         """
         self.data = data
-        self.event = event
-        self.id = id
-        self.retry = retry
-        self.comment = comment
 
-    cpdef str write_data(self):
+    cpdef bytes write_data(self):
         return json_settings.dumps(self.data)
 
     def __repr__(self):
@@ -319,24 +305,14 @@ cdef class TextServerSentEvent(ServerSentEvent):
 
     Attributes:
         data: A string that will be transmitted to the client as is.
-        event: Optional event name.
-        id: Optional event ID to set the EventSource's last event ID value.
-        retry: The reconnection time. If the connection to the server is lost,
-               the browser will wait for the specified time before attempting
-               to reconnect.
-        comment: Optional comment.
     """
 
     def __init__(
         self,
         str data,
-        str event = None,
-        str id = None,
-        int retry = -1,
-        str comment = None,
     ):
-        super().__init__(data, event, id, retry, comment)
+        super().__init__(data)
 
-    cpdef str write_data(self):
+    cpdef bytes write_data(self):
         # Escape \r\n to avoid issues with data containing EOL
         return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")

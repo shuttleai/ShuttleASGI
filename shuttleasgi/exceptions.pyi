@@ -35,6 +35,10 @@ class RangeNotSatisfiable(HTTPException):
     def __init__(self, message: str = "Range Not Satisfiable"):
         super().__init__(416, message)
 
+class WrongMethod(HTTPException):
+    def __init__(self):
+        super().__init__(405)
+
 class NotFound(HTTPException):
     def __init__(self):
         super().__init__(404)

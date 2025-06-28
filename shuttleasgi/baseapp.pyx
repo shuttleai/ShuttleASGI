@@ -2,7 +2,7 @@ import http
 import logging
 
 from .contents cimport Content, TextContent, JSONContent
-from .exceptions cimport BadRequest, HTTPException, InternalServerError, NotFound
+from .exceptions cimport BadRequest, HTTPException, InternalServerError, NotFound, WrongMethod
 from .messages cimport Request, Response
 
 from .utils import get_class_instance_hierarchy
@@ -12,6 +12,23 @@ try:
     from pydantic import ValidationError
 except ImportError:
     ValidationError = None
+
+
+async def handle_wrong_method(app, Request request, HTTPException http_exception):
+    cdef str method = request.method
+    cdef str path = request.url.path.decode()
+
+    return Response(
+        405,
+        content=JSONContent({
+            "error": {
+                "type": "invalid_request_error",
+                "code": "method_not_allowed",
+                "message": f"Not allowed to {method} on {path}.",
+                "param": None
+            }
+        })
+    )
 
 
 async def handle_not_found(app, Request request, HTTPException http_exception):
@@ -26,23 +43,6 @@ async def handle_not_found(app, Request request, HTTPException http_exception):
                 "type": "invalid_request_error",
                 "code": "unknown_url",
                 "message": f"Invalid URL ({method} {path}).",
-                "param": None
-            }
-        })
-    )
-
-
-async def handle_wrong_method(app, Request request, HTTPException http_exception):
-    cdef str method = request.method
-    cdef str path = request.url.path.decode()
-
-    return Response(
-        405,
-        content=JSONContent({
-            "error": {
-                "type": "invalid_request_error",
-                "code": "method_not_allowed",
-                "message": f"Not allowed to {method} on {path}.",
                 "param": None
             }
         })
@@ -87,6 +87,7 @@ cdef class BaseApplication:
 
     def init_exceptions_handlers(self):
         default_handlers = {
+            405: handle_wrong_method,
             404: handle_not_found,
             400: handle_bad_request
         }
@@ -122,6 +123,8 @@ cdef class BaseApplication:
     async def handle(self, Request request):
         cdef object route
         cdef Response response
+        cdef set allowed_methods
+        cdef bytes path_bytes = request._path
 
         route = self.router.get_match(request)
 
@@ -133,15 +136,24 @@ cdef class BaseApplication:
             except Exception as exc:
                 response = await self.handle_request_handler_exception(request, exc)
         else:
-            not_found_handler = self.get_http_exception_handler(NotFound()) or handle_not_found
-
-            response = await not_found_handler(self, request, None)
+            allowed_methods = self.router.get_methods_for_path(path_bytes)
+            
+            if allowed_methods and request.method.encode() not in allowed_methods:
+                # Wrong method - 405
+                wrong_method_handler = self.exceptions_handlers.get(405, handle_wrong_method)
+                response = await wrong_method_handler(self, request, WrongMethod())
+                
+                # Add Allow header
+                if response:
+                    response.add_header(b"Allow", b", ".join(sorted(allowed_methods)))
+            else:
+                # Not found - 404
+                not_found_handler = self.exceptions_handlers.get(404, handle_not_found)
+                response = await not_found_handler(self, request, NotFound())
+                
             if not response:
                 response = Response(404)
-        # if the request handler didn't return an object,
-        # and since the request was handled successfully, return success status code No Content
-        # for example, a user might return "None" from an handler
-        # this might be ambiguous, if a programmer thinks to return None for "Not found"
+                
         return response or Response(204)
 
     async def handle_request_handler_exception(self, request, exc):

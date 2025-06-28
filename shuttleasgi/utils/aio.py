@@ -32,7 +32,7 @@ def fetch(url: str) -> Any:
 
 def _try_parse_content_as_json(content: bytes) -> Any:
     try:
-        return json.loads(content.decode("utf8"))
+        return json.loads(content)
     except json.JSONDecodeError:
         return content
 
