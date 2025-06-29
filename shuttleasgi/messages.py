@@ -213,7 +213,7 @@ class Message:
     async def json(self, loads=json_settings.loads):
         if not self.declares_json():
             return None
-        text = await self.text()
+        text = await self.content.read()
         if text is None or text == "":
             return None
         try:

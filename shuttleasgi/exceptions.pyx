@@ -83,6 +83,12 @@ cdef class NotImplementedByServer(HTTPException):
         super().__init__(501, "Not implemented by server")
 
 
+cdef class ServiceUnavailable(HTTPException):
+
+    def __init__(self):
+        super().__init__(503, "Service unavailable")
+
+
 cdef class InvalidArgument(Exception):
 
     def __init__(self, str message):

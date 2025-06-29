@@ -29,6 +29,10 @@ cdef class InternalServerError(HTTPException):
     cdef readonly object source_error
 
 
+cdef class ServiceUnavailable(HTTPException):
+    pass
+
+
 cdef class InvalidArgument(Exception):
     pass
 

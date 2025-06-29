@@ -10,7 +10,7 @@ from .url cimport URL
 cdef int MAX_RESPONSE_CHUNK_SIZE = 61440  # 64kb
 
 
-cdef bytes write_header(tuple header):
+cdef inline bytes write_header(tuple header):
     return header[0] + b': ' + header[1] + b'\r\n'
 
 
@@ -26,9 +26,15 @@ cdef bytes write_headers(list headers):
 
 cdef void extend_data_with_headers(list headers, bytearray data):
     cdef tuple header
-
+    cdef bytes h0, h1
+    
     for header in headers:
-        data.extend(write_header(header))
+        h0 = <bytes>header[0]
+        h1 = <bytes>header[1]
+        data.extend(h0)
+        data.extend(b': ')
+        data.extend(h1)
+        data.extend(b'\r\n')
 
 
 cdef bytes _get_status_line(int status_code):
@@ -66,7 +72,7 @@ cdef void ensure_host_header(Request request):
         request._add_header_if_missing(b'host', request.url.host)
 
 
-cdef bint should_use_chunked_encoding(Content content):
+cdef inline bint should_use_chunked_encoding(Content content):
     return content.length < 0
 
 
@@ -253,9 +259,15 @@ async def write_request(Request request):
 
 
 def get_chunks(bytes data):
-    cdef int i
-    for i in range(0, len(data), MAX_RESPONSE_CHUNK_SIZE):
-        yield data[i:i + MAX_RESPONSE_CHUNK_SIZE]
+    cdef int i, data_len = len(data)
+    cdef int chunk_size = MAX_RESPONSE_CHUNK_SIZE
+    cdef const unsigned char[:] data_view = data
+    
+    for i in range(0, data_len, chunk_size):
+        if i + chunk_size < data_len:
+            yield bytes(data_view[i:i + chunk_size])
+        else:
+            yield bytes(data_view[i:])
     yield b''
 
 

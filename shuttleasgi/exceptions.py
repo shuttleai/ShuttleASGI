@@ -72,6 +72,11 @@ class NotImplementedByServer(HTTPException):
         super().__init__(501, "Not implemented by server")
 
 
+class ServiceUnavailable(HTTPException):
+    def __init__(self):
+        super().__init__(503, "Service unavailable")
+
+
 class InvalidArgument(Exception):
     def __init__(self, message: str):
         super().__init__(message)
