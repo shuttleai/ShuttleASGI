@@ -123,6 +123,17 @@ class ServerSentEvent:
 
     def write_data(self) -> bytes: ...
 
+
+_DONE_BYTES = b'[DONE]'
+
+
+class DONEServerSentEvent(ServerSentEvent):
+    def __init__(self):
+        self.data = _DONE_BYTES
+
+    def write_data(self) -> bytes: ...
+
+
 class TextServerSentEvent(ServerSentEvent):
     def __init__(
         self,

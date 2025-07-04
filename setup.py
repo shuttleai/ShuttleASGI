@@ -58,6 +58,20 @@ if platform.python_implementation() == "CPython" and not skip_ext:
             ["shuttleasgi/baseapp.c"],
             extra_compile_args=COMPILE_ARGS,
         ),
+        Extension(
+            "shuttleasgi.middlewares.shuttle_headers",
+            ["shuttleasgi/middlewares/shuttle_headers.pyx"],
+            extra_compile_args=[
+                "-O3",                    # Maximum optimization
+                "-march=native",          # CPU-specific optimizations
+                "-mtune=native",          # CPU-specific tuning
+                "-ffast-math",            # Fast floating point
+                "-funroll-loops",         # Loop unrolling
+                "-finline-functions",     # Aggressive inlining
+            ],
+            extra_link_args=["-O3"],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+        )
     ]
 else:
     ext_modules = []

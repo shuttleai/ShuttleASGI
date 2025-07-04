@@ -25,6 +25,7 @@ from shuttleasgi import (
     Response,
     TextContent,
 )
+from shuttleasgi.context import RequestContext, _request_context
 from shuttleasgi.contents import FormPart
 from shuttleasgi.exceptions import Conflict, InternalServerError, NotFound, WrongMethod
 from shuttleasgi.server.application import Application, ApplicationSyncEvent
@@ -43,6 +44,7 @@ from shuttleasgi.server.bindings import (
     RequestUser,
     ServerInfo,
 )
+from shuttleasgi.middlewares.shuttle_headers import ShuttleHeadersDecoratorMiddleware, shuttle_headers
 from shuttleasgi.server.di import di_scope_middleware
 from shuttleasgi.server.normalization import ensure_response
 from shuttleasgi.server.openapi.v3 import OpenAPIHandler
@@ -50,7 +52,7 @@ from shuttleasgi.server.resources import get_resource_file_path
 from shuttleasgi.server.responses import status_code, text
 from shuttleasgi.server.routing import Router, SharedRouterError
 from shuttleasgi.server.security.hsts import HSTSMiddleware
-from shuttleasgi.server.sse import ServerSentEvent, TextServerSentEvent
+from shuttleasgi.server.sse import ServerSentEvent, TextServerSentEvent, DONEServerSentEvent
 from shuttleasgi.testing.helpers import get_example_scope
 from shuttleasgi.testing.messages import MockReceive, MockSend
 from tests.utils.application import FakeApplication
@@ -4162,6 +4164,93 @@ async def test_refs_characters_handling():
         assert f"$ref: '#/components/schemas/{key}'" in yaml_docs
 
 
+# async def test_context_processing_time():
+#     app = FakeApplication(show_error_details=True, router=Router())
+
+#     @app.router.get("/")
+#     async def home():
+#         return "Hello World"
+
+#     scope = get_example_scope("GET", "/", [])
+#     mock_receive = MockReceive()
+#     mock_send = MockSend()
+
+#     await app(scope, mock_receive, mock_send)
+
+#     response = app.response
+#     assert response is not None
+#     assert response.status == 200
+#     assert (await response.text()) == "Hello World"
+#     print(_request_context.get())
+#     print("Processing time:", RequestContext.get("processing_time"))
+#     # Convert to seconds for easier reading
+#     processing_time = RequestContext.get("processing_time")
+#     print(f"Processing time: {processing_time:.6f} seconds")
+
+
+async def test_shuttle_headers_middleware():
+    app = FakeApplication(show_error_details=True, router=Router())
+
+    app.middlewares.insert(0, ShuttleHeadersDecoratorMiddleware())
+
+    @app.router.get("/")
+    @shuttle_headers()
+    async def home():
+        import asyncio
+        await asyncio.sleep(5)
+        return "Hello World"
+
+    scope = get_example_scope("GET", "/", [])
+    mock_receive = MockReceive()
+    mock_send = MockSend()
+
+    await app(scope, mock_receive, mock_send)
+
+    response = app.response
+    assert response is not None
+    assert response.status == 200
+    assert (await response.text()) == "Hello World"
+    headers = response.headers
+    print(headers)
+
+
+async def test_multiple_concurrent_requests_shuttle_headers_middleware():
+    app = FakeApplication(show_error_details=True, router=Router())
+
+    app.middlewares.insert(0, ShuttleHeadersDecoratorMiddleware())
+
+    @app.router.get("/")
+    @shuttle_headers()
+    async def home():
+        await asyncio.sleep(5)
+        return "Hello Concurrent World"
+
+    async def simulate_request():
+        scope = get_example_scope("GET", "/", [])
+        mock_receive = MockReceive()
+        mock_send = MockSend()
+
+        await app(scope, mock_receive, mock_send)
+        response = app.response
+        assert response is not None
+        assert response.status == 200
+        assert (await response.text()) == "Hello Concurrent World"
+        headers = response.headers
+        print(_request_context.get())
+        return headers
+
+    # Simulate multiple concurrent requests
+    results = await asyncio.gather(*[simulate_request() for _ in range(10)])
+
+    # Ensure all request IDs are unique
+    assert len(set(results)) == 10
+
+    # Print request IDs for visibility
+    print("Concurrent Headers:")
+    for rid in results:
+        print(rid)
+
+
 async def test_application_sse_openai():
     app = FakeApplication(show_error_details=True, router=Router())
     get = app.router.get
@@ -4171,7 +4260,7 @@ async def test_application_sse_openai():
         for i in range(3):
             yield ServerSentEvent({"message": f"Hello World {i}"})
             await asyncio.sleep(0.05)
-        yield TextServerSentEvent("[DONE]")
+        yield DONEServerSentEvent()
 
 
     scope = get_example_scope("GET", "/events", [])

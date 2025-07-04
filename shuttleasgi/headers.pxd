@@ -9,28 +9,19 @@ cdef class Header:
     cdef readonly bytes name
     cdef readonly bytes value
 
-
 cdef class Headers:
     cdef readonly list values
-
-    cpdef tuple keys(self)
-
-    cpdef Headers clone(self)
+    cdef list _values
+    cdef dict _lookup
 
     cpdef tuple get(self, bytes name)
-
     cpdef list get_tuples(self, bytes name)
-
-    cpdef void add(self, bytes name, bytes value)
-
-    cpdef void set(self, bytes name, bytes value)
-
-    cpdef bytes get_single(self, bytes name)
-
-    cpdef bytes get_first(self, bytes name)
-
-    cpdef void remove(self, bytes key)
-
+    cpdef bytes get_first(self, bytes key)
+    cpdef bytes get_single(self, bytes key)
     cpdef void merge(self, list values)
-
+    cpdef Headers clone(self)
+    cpdef tuple keys(self)
+    cpdef void add(self, bytes name, bytes value)
+    cpdef void set(self, bytes name, bytes value)
+    cpdef void remove(self, bytes key)
     cpdef bint contains(self, bytes key)

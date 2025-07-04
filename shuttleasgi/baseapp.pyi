@@ -14,11 +14,13 @@ ExceptionHandlersType = Dict[
 ]
 
 class BaseApplication:
-    def __init__(self, show_error_details: bool, router: Router):
-        self.router = router
-        self.exceptions_handlers = self.init_exceptions_handlers()
-        self.show_error_details = show_error_details
-
+    router: Router
+    exceptions_handlers: ExceptionHandlersType
+    show_error_details: bool
+    _default_404: Callable
+    _default_405: Callable
+    
+    def __init__(self, show_error_details: bool, router: Router) -> None: ...
     def init_exceptions_handlers(self) -> ExceptionHandlersType: ...
     async def handle(self, request: Request) -> Response: ...
     async def handle_internal_server_error(

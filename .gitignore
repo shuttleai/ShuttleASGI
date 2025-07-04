@@ -117,6 +117,7 @@ tests/out/
 *,cover
 
 shuttleasgi/*.c
+shuttleasgi/middlewares/*.c
 shuttleasgi/*.html
 shuttleasgi/includes/*.html
 out/*

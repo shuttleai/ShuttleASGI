@@ -47,7 +47,8 @@ def main():
         "shuttleasgi/contents.pyx",
         "shuttleasgi/messages.pyx",
         "shuttleasgi/scribe.pyx",
-        "shuttleasgi/baseapp.pyx"
+        "shuttleasgi/baseapp.pyx",
+        "shuttleasgi/middlewares/shuttle_headers.pyx"
     ]
     
     for pyx_file in cython_files:

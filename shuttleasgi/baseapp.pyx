@@ -1,9 +1,15 @@
+# cython: language_level=3
+# cython: boundscheck=False, wraparound=False, nonecheck=False
+# cython: initializedcheck=False, cdivision=True
+
 import http
 import logging
+import time
 
 from .contents cimport Content, TextContent, JSONContent
 from .exceptions cimport BadRequest, HTTPException, InternalServerError, NotFound, WrongMethod
 from .messages cimport Request, Response
+from .context import RequestContext, _request_context
 
 from .utils import get_class_instance_hierarchy
 
@@ -82,6 +88,8 @@ cdef class BaseApplication:
     def __init__(self, bint show_error_details, object router):
         self.router = router
         self.exceptions_handlers = self.init_exceptions_handlers()
+        self._default_404 = self.exceptions_handlers.get(404, handle_not_found)
+        self._default_405 = self.exceptions_handlers.get(405, handle_wrong_method)
         self.show_error_details = show_error_details
         self.logger = get_logger()
 
@@ -127,34 +135,29 @@ cdef class BaseApplication:
         cdef bytes path_bytes = request._path
 
         route = self.router.get_match(request)
-
-        if route:
+        if route is not None:
             request.route_values = route.values
-
             try:
                 response = await route.handler(request)
             except Exception as exc:
                 response = await self.handle_request_handler_exception(request, exc)
-        else:
+
+        else:  # no route matched
             allowed_methods = self.router.get_methods_for_path(path_bytes)
-            
+
             if allowed_methods and request.method.encode() not in allowed_methods:
-                # Wrong method - 405
-                wrong_method_handler = self.exceptions_handlers.get(405, handle_wrong_method)
-                response = await wrong_method_handler(self, request, WrongMethod())
-                
-                # Add Allow header
-                if response:
-                    response.add_header(b"Allow", b", ".join(sorted(allowed_methods)))
+                # 405 – wrong HTTP method
+                response = await self._default_405(self, request, WrongMethod())
+                if response is not None:
+                    response.add_header(b"Allow", b", ".join(allowed_methods))
             else:
-                # Not found - 404
-                not_found_handler = self.exceptions_handlers.get(404, handle_not_found)
-                response = await not_found_handler(self, request, NotFound())
-                
-            if not response:
+                # 404 – path not found
+                response = await self._default_404(self, request, NotFound())
+
+            if response is None:
                 response = Response(404)
-                
-        return response or Response(204)
+
+        return response if response is not None else Response(204)
 
     async def handle_request_handler_exception(self, request, exc):
         if isinstance(exc, HTTPException):

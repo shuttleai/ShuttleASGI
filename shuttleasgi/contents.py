@@ -254,6 +254,17 @@ class ServerSentEvent:
         return f"ServerSentEvent({self.data})"
 
 
+_DONE_BYTES = b'[DONE]'
+
+
+class DONEServerSentEvent(ServerSentEvent):
+    def __init__(self):
+        self.data = _DONE_BYTES
+
+    def write_data(self) -> bytes:
+        return self.data
+
+
 class TextServerSentEvent(ServerSentEvent):
     def __init__(
         self,
@@ -262,4 +273,4 @@ class TextServerSentEvent(ServerSentEvent):
         super().__init__(data)
 
     def write_data(self) -> bytes:
-        return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")
+        return self.data.replace("\n", "\\n").encode("utf-8")

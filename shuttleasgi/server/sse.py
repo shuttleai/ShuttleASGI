@@ -4,12 +4,13 @@ This module offer built-in functions for Server Sent Events.
 
 from typing import AsyncIterable, Callable, List, Optional, Tuple
 
-from shuttleasgi.contents import ServerSentEvent, StreamedContent, TextServerSentEvent
+from shuttleasgi.contents import ServerSentEvent, StreamedContent, TextServerSentEvent, DONEServerSentEvent
 from shuttleasgi.messages import Response
 from shuttleasgi.scribe import write_sse
 
 __all__ = [
     "ServerSentEvent",
+    "DONEServerSentEvent",
     "TextServerSentEvent",
     "ServerSentEventsContent",
     "ServerSentEventsResponse",

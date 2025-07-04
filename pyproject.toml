@@ -31,6 +31,7 @@ dependencies = [
     "essentials-openapi>=1.2.0,<2.0",
     "python-dateutil~=2.9.0",
     "itsdangerous~=2.2.0",
+    "uuid-utils~=0.11.0",
 ]
 
 [tool.setuptools.packages.find]

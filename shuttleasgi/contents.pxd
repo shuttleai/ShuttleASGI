@@ -49,6 +49,10 @@ cdef class ServerSentEvent:
     cpdef bytes write_data(self)
 
 
+cdef class DONEServerSentEvent(ServerSentEvent):
+    pass
+
+
 cdef class TextServerSentEvent(ServerSentEvent):
     pass
 

@@ -1,3 +1,11 @@
+# cython: language_level=3
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+
+from libc.string cimport memcpy
+from cpython.bytes cimport PyBytes_FromStringAndSize
+
 import orjson as json
 import uuid_utils as uuid
 from collections.abc import MutableSequence
@@ -298,6 +306,25 @@ cdef class ServerSentEvent:
         return f"ServerSentEvent({self.data})"
 
 
+cdef bytes _DONE_BYTES = b'[DONE]'
+
+
+cdef class DONEServerSentEvent(ServerSentEvent):
+    """
+    Represents a special event that indicates the end of a Server-sent event stream.
+    This is used to signal that no more events will be sent.
+
+    Attributes:
+        data: A constant string '[DONE]' to indicate the end of the stream.
+    """
+
+    def __init__(self):
+        ServerSentEvent.__init__(self, _DONE_BYTES)
+
+    cpdef bytes write_data(self):
+        return _DONE_BYTES
+
+
 cdef class TextServerSentEvent(ServerSentEvent):
     """
     Represents a single event of a Server-sent event communication, to be used
@@ -314,5 +341,33 @@ cdef class TextServerSentEvent(ServerSentEvent):
         super().__init__(data)
 
     cpdef bytes write_data(self):
-        # Escape \r\n to avoid issues with data containing EOL
-        return self.data.replace("\r", "\\r").replace("\n", "\\n").encode("utf-8")
+        cdef:
+            str data_str = self.data
+            bytes utf8_data = data_str.encode('utf-8')
+            char* src = <char*>utf8_data
+            Py_ssize_t length = len(utf8_data)
+            Py_ssize_t i, j, newline_count = 0
+            bytes result
+            char* dst
+
+        for i in range(length):
+            if src[i] == b'\n':
+                newline_count += 1
+        
+        if newline_count == 0:
+            return utf8_data
+
+        result = PyBytes_FromStringAndSize(NULL, length + newline_count)
+        dst = <char*>result
+        j = 0
+
+        for i in range(length):
+            if src[i] == b'\n':
+                dst[j] = b'\\'
+                dst[j + 1] = b'n'
+                j += 2
+            else:
+                dst[j] = src[i]
+                j += 1
+                
+        return result
