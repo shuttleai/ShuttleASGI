@@ -5,7 +5,7 @@ used types to reduce the verbosity of the imports statements.
 
 __author__ = "Roberto Prevato <roberto.prevato@gmail.com>"
 __maintainer__ = "Christian Heru Mes <chris@shuttleai.app>"
-__version__ = "5.7.0"
+__version__ = "5.7.2"
 
 from .contents import Content as Content
 from .contents import FormContent as FormContent

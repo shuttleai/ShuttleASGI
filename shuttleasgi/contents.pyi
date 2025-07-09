@@ -129,7 +129,7 @@ _DONE_BYTES = b'[DONE]'
 
 class DONEServerSentEvent(ServerSentEvent):
     def __init__(self):
-        self.data = _DONE_BYTES
+        self.data = ServerSentEvent.__init__(self, _DONE_BYTES)
 
     def write_data(self) -> bytes: ...
 

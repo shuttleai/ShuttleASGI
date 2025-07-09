@@ -2,7 +2,7 @@ import http
 import re
 
 from libc.string cimport memcpy
-from cpython.bytes cimport PyBytes_FromStringAndSize, PyBytes_AsString, PyBytes_GET_SIZE
+from cpython.bytes cimport PyBytes_FromStringAndSize, PyBytes_AS_STRING, PyBytes_GET_SIZE
 from .contents cimport Content, StreamedContent
 from .cookies cimport Cookie, write_cookie_for_response
 from .messages cimport Request, Response
@@ -372,52 +372,40 @@ async def send_asgi_response(Response response, object send):
 
 _NEW_LINES_RX = re.compile("\r\n|\n")
 
-
-# Pre-allocated constants
-cdef bytes EMPTY_SSE = b"\n"
-cdef bytes DATA_PREFIX = b"data: "
-cdef bytes NEWLINES = b"\n\n"
-
-# For the most common case of just newlines
 cdef bytes EMPTY_DATA_SSE = b"data: \n\n"
 
+
 cpdef bytes write_sse(ServerSentEvent event):
-    cdef bytes data
-    cdef Py_ssize_t data_len
-    cdef char* result_buf
-    
-    # Fast path: no data at all
-    if not event.data:
-        return EMPTY_SSE
-    
-    # Get the data
-    data = event.write_data()
-    data_len = PyBytes_GET_SIZE(data)
-    
-    # Fast path: empty data string
+    """
+    Response 5: The Challenger. Minimal C-calls, no branching in hot path.
+    """
+    cdef:
+        bytes data = event.write_data()  # Direct C-level attribute access
+        Py_ssize_t data_len = len(data)
+        bytes result
+        char* buf
+        const char* data_ptr
+
     if data_len == 0:
         return EMPTY_DATA_SSE
-    
-    # Single allocation for the exact size needed
-    cdef bytes result = PyBytes_FromStringAndSize(NULL, 8 + data_len)
-    result_buf = PyBytes_AsString(result)
-    
-    # Copy in one go if possible, or use memcpy for larger data
-    if data_len < 32:  # Small data: manual copy can be faster
-        result_buf[0] = 100  # 'd'
-        result_buf[1] = 97   # 'a'
-        result_buf[2] = 116  # 't'
-        result_buf[3] = 97   # 'a'
-        result_buf[4] = 58   # ':'
-        result_buf[5] = 32   # ' '
-        memcpy(result_buf + 6, PyBytes_AsString(data), data_len)
-        result_buf[6 + data_len] = 10  # '\n'
-        result_buf[7 + data_len] = 10  # '\n'
-    else:
-        # Larger data: use memcpy for everything
-        memcpy(result_buf, b"data: ", 6)
-        memcpy(result_buf + 6, PyBytes_AsString(data), data_len)
-        result_buf[6 + data_len] = 10
-        result_buf[7 + data_len] = 10
-    
+
+    result = PyBytes_FromStringAndSize(NULL, 6 + data_len + 2)
+    if not result:
+        raise MemoryError()
+
+    buf = PyBytes_AS_STRING(result)
+    data_ptr = PyBytes_AS_STRING(data)
+
+    buf[0] = 100  # 'd'
+    buf[1] = 97   # 'a'
+    buf[2] = 116  # 't'
+    buf[3] = 97   # 'a'
+    buf[4] = 58   # ':'
+    buf[5] = 32   # ' '
+
+    memcpy(buf + 6, data_ptr, data_len)
+
+    buf[6 + data_len] = 10  # '\n'
+    buf[7 + data_len] = 10  # '\n'
+
     return result

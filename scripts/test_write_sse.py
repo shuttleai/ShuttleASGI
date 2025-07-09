@@ -13,18 +13,18 @@ warmup()
 data = "[DONE]"
 event = TextServerSentEvent(data)
 event2 = DONEServerSentEvent()
-# event3 = ServerSentEvent({
-#     "message": {
-#         "content": "This is a test message",
-#         "role": "assistant"
-#     }
-# })
+event3 = ServerSentEvent({
+    "message": {
+        "content": "This is a test message",
+        "role": "assistant"
+    }
+})
 
 start_time = time.perf_counter()
 for _ in range(1000000):
     write_sse(event)
     write_sse(event2)
-    # write_sse(event3)
+    write_sse(event3)
 end_time = time.perf_counter()
 
 print(f"Time taken for TextServerSentEvent.write_data(): {end_time - start_time:.6f} seconds")

@@ -157,7 +157,7 @@ cdef class BaseApplication:
             if response is None:
                 response = Response(404)
 
-        return response if response is not None else Response(204)
+        return response or Response(204)
 
     async def handle_request_handler_exception(self, request, exc):
         if isinstance(exc, HTTPException):
