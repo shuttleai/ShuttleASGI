@@ -14,8 +14,6 @@ COMPILE_ARGS = ["-O2"]
 
 # Check for environment variable to skip extensions
 skip_ext = os.environ.get("SHUTTLEASGI_NO_EXTENSIONS", "0") == "1"
-
-
 if platform.python_implementation() == "CPython" and not skip_ext:
     ext_modules = [
         Extension(
@@ -60,7 +58,7 @@ if platform.python_implementation() == "CPython" and not skip_ext:
         ),
         Extension(
             "shuttleasgi.middlewares.shuttle_headers",
-            ["shuttleasgi/middlewares/shuttle_headers.pyx"],
+            ["shuttleasgi/middlewares/shuttle_headers.c"],
             extra_compile_args=[
                 "-O3",                    # Maximum optimization
                 "-march=native",          # CPU-specific optimizations
@@ -71,7 +69,35 @@ if platform.python_implementation() == "CPython" and not skip_ext:
             ],
             extra_link_args=["-O3"],
             define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
-        )
+        ),
+        Extension(
+            "shuttleasgi.validation.sai.common",
+            ["shuttleasgi/validation/sai/common.c"],
+            extra_compile_args=[
+                "-O3",                    # Maximum optimization
+                "-march=native",          # CPU-specific optimizations
+                "-mtune=native",          # CPU-specific tuning
+                "-ffast-math",            # Fast floating point
+                "-funroll-loops",         # Loop unrolling
+                "-finline-functions",     # Aggressive inlining
+            ],
+            extra_link_args=["-O3"],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+        ),
+        Extension(
+            "shuttleasgi.validation.sai.chat",
+            ["shuttleasgi/validation/sai/chat.c"],
+            extra_compile_args=[
+                "-O3",                    # Maximum optimization
+                "-march=native",          # CPU-specific optimizations
+                "-mtune=native",          # CPU-specific tuning
+                "-ffast-math",            # Fast floating point
+                "-funroll-loops",         # Loop unrolling
+                "-finline-functions",     # Aggressive inlining
+            ],
+            extra_link_args=["-O3"],
+            define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+        ),
     ]
 else:
     ext_modules = []

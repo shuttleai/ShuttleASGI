@@ -48,7 +48,9 @@ def main():
         "shuttleasgi/messages.pyx",
         "shuttleasgi/scribe.pyx",
         "shuttleasgi/baseapp.pyx",
-        "shuttleasgi/middlewares/shuttle_headers.pyx"
+        "shuttleasgi/middlewares/shuttle_headers.pyx",
+        "shuttleasgi/validation/sai/common.pyx",
+        "shuttleasgi/validation/sai/chat.pyx"
     ]
     
     for pyx_file in cython_files:

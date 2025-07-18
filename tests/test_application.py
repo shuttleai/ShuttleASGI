@@ -1,5 +1,6 @@
 import asyncio
 import json
+import orjson
 import os
 import re
 import sys
@@ -21,10 +22,12 @@ from rodi import Container, inject
 from shuttleasgi import (
     HTTPException,
     JSONContent,
+    Content,
     Request,
     Response,
     TextContent,
 )
+from shuttleasgi.validation.sai.chat import ValidationError as saiValidationError, parse_and_validate_json
 from shuttleasgi.context import RequestContext, _request_context
 from shuttleasgi.contents import FormPart
 from shuttleasgi.exceptions import Conflict, InternalServerError, NotFound, WrongMethod
@@ -49,7 +52,7 @@ from shuttleasgi.server.di import di_scope_middleware
 from shuttleasgi.server.normalization import ensure_response
 from shuttleasgi.server.openapi.v3 import OpenAPIHandler
 from shuttleasgi.server.resources import get_resource_file_path
-from shuttleasgi.server.responses import status_code, text
+from shuttleasgi.server.responses import status_code, text, pretty_json
 from shuttleasgi.server.routing import Router, SharedRouterError
 from shuttleasgi.server.security.hsts import HSTSMiddleware
 from shuttleasgi.server.sse import ServerSentEvent, TextServerSentEvent, DONEServerSentEvent
@@ -4186,6 +4189,110 @@ async def test_refs_characters_handling():
 #     # Convert to seconds for easier reading
 #     processing_time = RequestContext.get("processing_time")
 #     print(f"Processing time: {processing_time:.6f} seconds")
+
+
+async def test_validation():
+    app = FakeApplication(show_error_details=True, router=Router())
+
+    # Define the /v1/chat/completions endpoint
+    @app.router.post("/v1/chat/completions")
+    async def chat_completions(request):
+        try:
+            # Read request body and validate
+            body = await request.read()
+            payload = parse_and_validate_json(body, "chat_completion")
+            print("payload", payload)
+            return pretty_json(payload, status=200)
+        except saiValidationError as e:
+            # Return error details as JSON
+            error_data = {
+                "error": {
+                    "message": str(e),
+                    "type": e.error_type,
+                    "param": e.param,
+                    "code": e.code
+                }
+            }
+            print("error", error_data)
+            return pretty_json(
+                error_data,
+                status=400
+            )
+
+    # Helper function to create JSON bytes
+    def to_json(payload):
+        return orjson.dumps(payload)
+
+    # Test 1: Valid payload
+    valid_payload = {
+        "model": "test-model",
+        "messages": [
+            {"role": "system", "content": "System message"},
+            {"role": "user", "content": "User message"}
+        ],
+        "temperature": 1.0,
+        "max_tokens": 1000,
+        "stream": False
+    }
+    scope = get_example_scope("POST", "/v1/chat/completions", [(b"Content-Type", b"application/json")])
+    payload_to_json = to_json(valid_payload)
+    mock_receive = MockReceive([payload_to_json])  # Pass body to MockReceive
+    mock_send = MockSend()
+
+    await app(scope, mock_receive, mock_send)
+    response = app.response
+    assert response is not None
+    assert response.status == 200
+    assert await response.json() == valid_payload
+
+    # Test 2: Missing required field 'model'
+    invalid_payload = {
+        "messages": [{"role": "user", "content": "User message"}]
+    }
+    scope = get_example_scope("POST", "/v1/chat/completions", [(b"Content-Type", b"application/json")])
+    mock_receive = MockReceive([to_json(invalid_payload)])  # Pass body to MockReceive
+    mock_send = MockSend()
+
+    await app(scope, mock_receive, mock_send)
+    response = app.response
+    assert response is not None
+    assert response.status == 400
+    error_response = await response.json()
+    assert error_response["error"]["message"] == "you must provide a model parameter"
+    assert error_response["error"]["type"] == "invalid_request_error"
+    assert error_response["error"]["param"] == "model"
+
+    # Test 3: Invalid JSON
+    scope = get_example_scope("POST", "/v1/chat/completions", [(b"Content-Type", b"application/json")])
+    mock_receive = MockReceive([b"invalid json"])  # Pass invalid JSON body
+    mock_send = MockSend()
+
+    await app(scope, mock_receive, mock_send)
+    response = app.response
+    assert response is not None
+    assert response.status == 400
+    error_response = await response.json()
+    assert "We could not parse the JSON body of your request." in error_response["error"]["message"]
+    assert error_response["error"]["type"] == "invalid_request_error"
+    assert error_response["error"]["param"] is None
+
+    # Test 4: Invalid role in message
+    invalid_payload = {
+        "model": "test-model",
+        "messages": [{"role": "invalid", "content": "User message"}]
+    }
+    scope = get_example_scope("POST", "/v1/chat/completions", [(b"Content-Type", b"application/json")])
+    mock_receive = MockReceive([to_json(invalid_payload)])  # Pass body to MockReceive
+    mock_send = MockSend()
+    await app(scope, mock_receive, mock_send)
+    response = app.response
+    assert response is not None
+    assert response.status == 400
+    error_response = await response.json()
+    assert "Invalid value:" in error_response["error"]["message"]
+    assert error_response["error"]["type"] == "invalid_request_error"
+    assert error_response["error"]["param"] == "messages[0].role"
+    assert error_response["error"]["code"] == "invalid_value"
 
 
 async def test_shuttle_headers_middleware():
